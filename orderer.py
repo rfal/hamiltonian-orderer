@@ -112,5 +112,17 @@ class Term:
 
         return res
 
+    def _total_degree(self):
+        '''
+        Return the degree of a Term, taing into account the number of operators and complex numbers (because they are supposed to vary in time). Only used to define a natural total order on Term.
+
+        Convention: Term([ZERO])._total_degree() = 0
+        '''
+        symbols_that_count = [s for s in self.symbols if s.behavior not in ['zero', 'one', 'real']]
+
+        return len(symbols_that_count)
+
+
+
 class Expression:
     pass

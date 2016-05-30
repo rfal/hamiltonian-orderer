@@ -610,6 +610,64 @@ class TestTerm(unittest.TestCase):
         # Assert
         self.assertEqual(res, "k^2.n.xi*^2.zeta^3.a*^2.a.a*.b^2.b*^3")
 
+    def test01200_degreeOfZero_0(self):
+        # Arrange
+        t = Term([ZERO])
+
+        # Act
+        res = t._total_degree()
+
+        # Assert
+        self.assertEqual(res, 0)
+
+    def test01300_degreeOfOne_0(self):
+        # Arrange
+        t = Term([ONE])
+
+        # Act
+        res = t._total_degree()
+
+        # Assert
+        self.assertEqual(res, 0)
+
+    def test01400_firstDegreeTerm_1(self):
+        # Arrange
+        k = Symbol('k', 'real')
+        n = Symbol('n', 'real')
+        xi = Symbol('xi', 'complex')
+        zeta = Symbol('zeta', 'complex')
+        a = Symbol('a', 'annihilation')
+        b = Symbol('b', 'annihilation')
+
+        t = Term([k, k, n, a])
+
+        # Act
+        res = t._total_degree()
+
+        # Assert
+        self.assertEqual(res, 1)
+
+    def test01500_arbitraryDegreeTerm_rightDegree(self):
+        # Arrange
+        zero = Symbol('0', 'zero')
+        one = Symbol('1', 'one')
+        k = Symbol('k', 'real')
+        n = Symbol('n', 'real')
+        xi = Symbol('xi', 'complex')
+        zeta = Symbol('zeta', 'complex')
+        a = Symbol('a', 'annihilation')
+        b = Symbol('b', 'annihilation')
+
+        symbols = [k, n, xi.conj(), zeta, a.conj(), a, a.conj(), b, b.conj()]
+        
+        t = Term(symbols)
+
+        # Act
+        res = t._total_degree()
+
+        # Assert
+        self.assertEqual(res, 7)
+
 class TestExpression(unittest.TestCase):
     pass
 
