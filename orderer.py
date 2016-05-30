@@ -72,7 +72,45 @@ ZERO = Symbol('0', 'zero')
 ONE = Symbol('1', 'one')
 
 class Term:
-    pass
+    def __init__(self, symbols):
+        if not symbols or ZERO in symbols:
+            self.symbols = [ZERO]
+        elif symbols == [ONE]:
+            self.symbols = symbols
+        else:
+            self.symbols = sorted([s for s in symbols if s != ONE]) # Thank God sorted() is stable! (it preserves the original order of equivalent keys)
+
+    def __eq__(A, B):
+        return A.symbols == B.symbols
+
+    def __str__(self):
+        groups = self._group_symbols()
+        str_group = lambda x: str(x[0]) + ("^" + str(x[1]) if x[1] > 1 else "")
+        
+        return '.'.join(map(str_group, groups))
+
+    def _group_symbols(self):
+        '''
+        Groups identical symbols into a couple (Symbol, power) for treatment by _str_grouped_symbols.
+
+        Returns a list of such couples that bijectively represents the Term object.
+        '''
+        symbols = self.symbols
+        
+        res = []
+        i = 0
+        while i < len(symbols):
+            s = symbols[i]
+            j = 1
+            while i + j < len(symbols) and symbols[i + j] == s:
+                j += 1
+            
+            g = (s, j)
+            res.append(g)
+
+            i += j
+
+        return res
 
 class Expression:
     pass
