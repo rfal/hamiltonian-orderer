@@ -610,27 +610,27 @@ class TestTerm(unittest.TestCase):
         # Assert
         self.assertEqual(res, "k^2.n.xi*^2.zeta^3.a*^2.a.a*.b^2.b*^3")
 
-    def test01200_degreeOfZero_0(self):
+    def test01200_numSymbolsLikeZero_OK(self):
         # Arrange
         t = Term([ZERO])
 
         # Act
-        res = t._total_degree()
+        res_name_zero = t._num_symbols_like(name=ZERO.name)
+        res_behavior_zero = t._num_symbols_like(behavior=ZERO.behavior)
+        res_dag_zero = t._num_symbols_like(dag=ZERO.dag)
+        res_name_one = t._num_symbols_like(name=ONE.name)
+        res_behavior_one = t._num_symbols_like(behavior=ONE.behavior)
+        res_dag_one = t._num_symbols_like(dag=ONE.dag)
 
         # Assert
-        self.assertEqual(res, 0)
+        self.assertEqual(res_name_zero, 1)
+        self.assertEqual(res_behavior_zero, 1)
+        self.assertEqual(res_dag_zero, 1)
+        self.assertEqual(res_name_one, 0)
+        self.assertEqual(res_behavior_one, 0)
+        self.assertEqual(res_dag_one, 1)
 
-    def test01300_degreeOfOne_0(self):
-        # Arrange
-        t = Term([ONE])
-
-        # Act
-        res = t._total_degree()
-
-        # Assert
-        self.assertEqual(res, 0)
-
-    def test01400_firstDegreeTerm_1(self):
+    def test01300_numSymbolsLikeBigTerm_OK(self):
         # Arrange
         k = Symbol('k', 'real')
         n = Symbol('n', 'real')
@@ -639,34 +639,43 @@ class TestTerm(unittest.TestCase):
         a = Symbol('a', 'annihilation')
         b = Symbol('b', 'annihilation')
 
-        t = Term([k, k, n, a])
+        symbols = [k, k, n, xi.conj(), xi.conj(), zeta, zeta, zeta, a.conj(), a.conj(), a, a.conj(), b, b, b.conj(), b.conj(), b.conj()]
 
-        # Act
-        res = t._total_degree()
-
-        # Assert
-        self.assertEqual(res, 1)
-
-    def test01500_arbitraryDegreeTerm_rightDegree(self):
-        # Arrange
-        zero = Symbol('0', 'zero')
-        one = Symbol('1', 'one')
-        k = Symbol('k', 'real')
-        n = Symbol('n', 'real')
-        xi = Symbol('xi', 'complex')
-        zeta = Symbol('zeta', 'complex')
-        a = Symbol('a', 'annihilation')
-        b = Symbol('b', 'annihilation')
-
-        symbols = [k, n, xi.conj(), zeta, a.conj(), a, a.conj(), b, b.conj()]
-        
         t = Term(symbols)
 
         # Act
-        res = t._total_degree()
+        res_name_zero = t._num_symbols_like(name=ZERO.name)
+        res_behavior_zero = t._num_symbols_like(behavior=ZERO.behavior)
+        res_name_one = t._num_symbols_like(name=ONE.name)
+        res_behavior_one = t._num_symbols_like(behavior=ONE.behavior)
+        res_name_k = t._num_symbols_like(name='k')
+        res_behavior_real = t._num_symbols_like(behavior='real')
+        res_name_n = t._num_symbols_like(name='n')
+        res_name_xi = t._num_symbols_like(name='xi')
+        res_behavior_complex = t._num_symbols_like(behavior='complex')
+        res_name_zeta = t._num_symbols_like(name='zeta')
+        res_name_a = t._num_symbols_like(name='a')
+        res_behavior_annihilation = t._num_symbols_like(behavior='annihilation')
+        res_name_b = t._num_symbols_like(name='b')
+        res_dag = t._num_symbols_like(dag=True)
+        res_all = t._num_symbols_like()
 
         # Assert
-        self.assertEqual(res, 7)
+        self.assertEqual(res_name_zero, 0)
+        self.assertEqual(res_behavior_zero, 0)
+        self.assertEqual(res_name_one, 0)
+        self.assertEqual(res_behavior_one, 0)
+        self.assertEqual(res_name_k, 2)
+        self.assertEqual(res_behavior_real, 3)
+        self.assertEqual(res_name_n, 1)
+        self.assertEqual(res_name_xi, 2)
+        self.assertEqual(res_behavior_complex, 5)
+        self.assertEqual(res_name_zeta, 3)
+        self.assertEqual(res_name_a, 4)
+        self.assertEqual(res_behavior_annihilation, 9)
+        self.assertEqual(res_name_b, 5)
+        self.assertEqual(res_dag, 8)
+        self.assertEqual(res_all, 17)
 
 class TestExpression(unittest.TestCase):
     pass

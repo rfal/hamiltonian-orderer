@@ -112,17 +112,20 @@ class Term:
 
         return res
 
-    def _total_degree(self):
+    def _num_symbols_like(self, name=None, behavior=None, dag=None):
         '''
-        Return the degree of a Term, taing into account the number of operators and complex numbers (because they are supposed to vary in time). Only used to define a natural total order on Term.
-
-        Convention: Term([ZERO])._total_degree() = 0
+        Return the number of Symbols in a Term matching the given properties when specified.
         '''
-        symbols_that_count = [s for s in self.symbols if s.behavior not in ['zero', 'one', 'real']]
+        symbol_selection = self.symbols
 
-        return len(symbols_that_count)
+        if name is not None:
+            symbol_selection = [s for s in symbol_selection if s.name == name]
+        if behavior is not None:
+            symbol_selection = [s for s in symbol_selection if s.behavior == behavior]
+        if dag is not None:
+            symbol_selection = [s for s in symbol_selection if s.dag == dag]
 
-
+        return len(symbol_selection)
 
 class Expression:
     pass
