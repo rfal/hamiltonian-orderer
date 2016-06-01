@@ -35,11 +35,14 @@ class Symbol:
         if i_b_a != i_b_b:
             return i_b_a < i_b_b # We want the same order as the specified _behaviors list
         else:
-            if a.behavior == "zero" or a.behavior == "one":
+            behavior = a.behavior
+            if behavior == "zero" or behavior == "one":
                 return False # All the zeros and the ones are the same
             else:
                 if a.name != b.name:
                     return a.name < b.name # Inside the same behavior we use the lexicographical orber
+                elif a.dag != b.dag and behavior != 'annihilation':
+                    return a.dag # Dagged symbols come before when they commute
                 else:
                     return False
 
@@ -193,6 +196,9 @@ class Term:
         str_group = lambda x: str(x[0]) + ("^" + str(x[1]) if x[1] > 1 else "")
         
         return ' '.join(map(str_group, groups))
+
+    def __mul__(A, B):
+        return Term(A.symbols + B.symbols)
 
     def _group_symbols(self):
         '''

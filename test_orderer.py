@@ -261,7 +261,7 @@ class TestSymbol(unittest.TestCase):
         self.assertTrue(n < xi)
         self.assertTrue(zeta < a)
 
-        self.assertFalse(xi.conj() < xi)
+        self.assertTrue(xi.conj() < xi)
         self.assertFalse(a.conj() < a)
 
     def test02100_symbolComparisonLessThanEqual_OK(self):
@@ -327,7 +327,7 @@ class TestSymbol(unittest.TestCase):
         self.assertTrue(xi > n)
         self.assertTrue(a > zeta)
 
-        self.assertFalse(xi > xi.conj())
+        self.assertTrue(xi > xi.conj())
         self.assertFalse(a > a.conj())
 
     def test02200_symbolComparisonGreaterThanEqual_OK(self):
@@ -991,6 +991,18 @@ class TestTerm(unittest.TestCase):
 
         # Assert
         self.assertEqual(res, t)
+
+    def test04600_mulTerms_OK(self):
+        # Arrange
+        t1 = Term([self.k, self.xi, self.a.conj(), self.a, self.b.conj(), self.b.conj()])
+        t2 = Term([self.n, self.n, self.xi.conj(), self.zeta, self.a.conj(), self.a, self.b, self.b.conj()])
+
+        # Act
+        res = t1 * t2
+        expected_res = Term([self.k, self.n, self.n, self.xi.conj(), self.xi, self.zeta, self.a.conj(), self.a, self.a.conj(), self.a, self.b.conj(), self.b.conj(), self.b, self.b.conj()])
+
+        # Assert
+        self.assertEqual(res, expected_res)
 
 class TestExpression(unittest.TestCase):
     pass
