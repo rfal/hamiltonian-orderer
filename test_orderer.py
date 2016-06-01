@@ -1036,25 +1036,138 @@ class TestTerm(unittest.TestCase):
         self.assertEqual(res, Term([self.b, self.a]))
 
 class TestExpression(unittest.TestCase):
-    pass
+    def setUp(self):
+        self.k = Symbol('k', 'real')
+        self.n = Symbol('n', 'real')
+        self.x = Symbol('x', 'real')
+        self.xi = Symbol('xi', 'complex')
+        self.zeta = Symbol('zeta', 'complex')
+        self.z = Symbol('z', 'complex')
+        self.a = Symbol('a', 'annihilation')
+        self.b = Symbol('b', 'annihilation')
+
+        self.bank = [self.k, self.n, self.x, self.xi, self.zeta, self.z, self.a, self.b]
+
+    def test00100_instanciateExpressionEmptyList_attrZero(self):
+        # Arrange
+
+        # Act
+        e = Expression([])
+
+        # Assert
+        self.assertEqual(e.terms, [Term()])
+
+    def test00200_instanciateExpressionTwoTerms_attrOK(self):
+        # Arrange
+        t1 = Term('1')
+
+        # Act
+        e = Expression([t1, t1])
+
+        # Assert
+        self.assertEqual(e.terms, [t1, t1])
+
+    def test00300_instanciateExpressionTwoDisorderedTerms_attrOK(self):
+        # Arrange
+        t1 = Term('1')
+        t2 = Term('a* a')
+
+        # Act
+        e1 = Expression([t1, t2])
+        e2 = Expression([t2, t1])
+
+        # Assert
+        self.assertEqual(e1.terms, [t2, t1])
+        self.assertEqual(e2.terms, [t2, t1])
+
+    def test00400_instanciateExpressionWithZero_zero(self):
+        # Arrange
+        t1 = Term('1')
+        t2 = Term('a* a')
+        t3 = Term()
+
+        # Act
+        e = Expression([t1, t2, t1, t3, t2, t2])
+
+        # Assert
+        self.assertEqual(e.terms, [Term()])
+
+    def test00500_exprEquality_OK(self):
+        # Arrange
+        e1 = Expression([Term('1'), Term('a* a')])
+        e2 = Expression([Term('1'), Term('a* a')])
+        e3 = Expression([Term('b'), Term('a* a')])
+
+        # Act
+
+        # Assert
+        self.assertEqual(e1, e2)
+        self.assertNotEqual(e1, e3)
+
+    def test00600_addExprExpr_OK(self):
+        # Arrange
+        e1 = Expression([Term('1'), Term('a* a')])
+        e2 = Expression([Term('b')])
+
+        # Act
+        e3 = e1 + e2
+
+        # Assert
+        self.assertEqual(e3, Expression([Term('1'), Term('a* a'), Term('b')]))
+
+    def test00700_addExprSymbol_OK(self):
+        # Arrange
+        e = Expression([Term('1'), Term('a* a'), Term('b')])
+
+        # Act
+        res = e + self.b
+
+        # Assert
+        self.assertEqual(res, Expression([Term('1'), Term('a* a'), Term('b'), Term('b')]))
+
+    def test00800_addSymbolExpr_OK(self):
+        # Arrange
+        e = Expression([Term('1'), Term('a* a'), Term('b')])
+
+        # Act
+        res = self.b + e
+
+        # Assert
+        self.assertEqual(res, Expression([Term('1'), Term('a* a'), Term('b'), Term('b')]))
+
+    def test00700_addExprTerm_OK(self):
+        # Arrange
+        e = Expression([Term('1'), Term('a* a'), Term('b')])
+
+        # Act
+        res = e + Term('b* b a')
+
+        # Assert
+        self.assertEqual(res, Expression([Term('1'), Term('a* a'), Term('b'), Term('b* b a')]))
+
+    def test00800_addTermExpr_OK(self):
+        # Arrange
+        e = Expression([Term('1'), Term('a* a'), Term('b')])
+
+        # Act
+        res = Term('b* b a') + e
+
+        # Assert
+        self.assertEqual(res, Expression([Term('1'), Term('a* a'), Term('b'), Term('b* b a')]))
 
 if __name__ == '__main__':
     print(">>> Testing Symbol class...\n")
     suite = unittest.TestLoader().loadTestsFromTestCase(TestSymbol)
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    unittest.TextTestRunner().run(suite)
 
-    sleep(1)
+    sleep(0.3)
 
-    print("\n======================================================================\n")
-
-    print(">>> Testing Term class...\n")
+    print("\n>>> Testing Term class...\n")
     suite = unittest.TestLoader().loadTestsFromTestCase(TestTerm)
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    unittest.TextTestRunner().run(suite)
 
-    # sleep(1)
-
-    # print("\n======================================================================\n")
+    sleep(0.3)
     
-    # print(">>> Testing Expression class...\n")
-    # suite = unittest.TestLoader().loadTestsFromTestCase(TestExpression)
-    # unittest.TextTestRunner(verbosity=2).run(suite)
+    print("\n>>> Testing Expression class...\n")
+    suite = unittest.TestLoader().loadTestsFromTestCase(TestExpression)
+    unittest.TextTestRunner().run(suite)

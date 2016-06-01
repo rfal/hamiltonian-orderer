@@ -86,11 +86,16 @@ class Term:
     '''
     A Term is a product of Symbols and can be instanciated as such. It has a list of symbols as its only attribute and can be bijectively represented by a string in the form
         "s_1^k_1 s_2^k_2 ... s_n^k_n"
-    where the s_is are Symbols or conjugates of Symbols.
+    where the s_is are Symbols or conjugates of Symbols. Some default symbols are defined in the class attribute _default_bank that is used by default when instanciated a Term using such a string.
 
     Terms are totally ordered in a recursive manner according to the order relationship "I naturally write this Term to the *right* of that Term in an Expression".
     '''
-    def __init__(self, info, bank=[]):
+    _default_bank = [Symbol('k', 'real'), Symbol('n', 'real'), Symbol('x', 'real'), Symbol('xi', 'complex'), Symbol('zeta', 'complex'), Symbol('z', 'complex'), Symbol('a', 'annihilation'), Symbol('b', 'annihilation')]
+
+    def __init__(self, info=[], bank=None):
+        if bank is None:
+            bank = self._default_bank
+
         if isinstance(info, str):
             if any(bank.count(s) > 1 for s in bank):
                 raise Exception('The symbol bank given is ambiguous.')
@@ -325,4 +330,24 @@ class Term:
         return Term(new_symbols)
 
 class Expression:
-    pass
+    def __init__(self, terms=[]):
+        if not terms or Term() in terms:
+            self.terms = [Term()] # An empty sum is zero
+        else:
+            self.terms = sorted(terms)[::-1] # Because we want the Terms in decreasing order
+
+    def __eq__(E, F):
+        return E.terms == F.terms
+
+    def __add__(E, F):
+        if isinstance(F, Expression):
+            return Expression(E.terms + F.terms)
+        elif isinstance(F, Symbol):
+            return E + Expression([Term([F])])
+        elif isinstance(F, Term):
+            return E + Expression([F])
+        else:
+            return NotImplemented
+
+    def __radd__(E, F):
+        return E + F
