@@ -83,6 +83,13 @@ ZERO = Symbol('0', 'zero')
 ONE = Symbol('1', 'one')
 
 class Term:
+    '''
+    A Term is a product of Symbols and can be instanciated as such. It has a list of symbols as its only attribute and can be bijectively represented by a string in the form
+        "s_1^k_1 s_2^k_2 ... s_n^k_n"
+    where the s_is are Symbols or conjugates of Symbols.
+
+    Terms are totally ordered in a recursive manner according to the order relationship "I naturally write this Term to the *right* of that Term in an Expression".
+    '''
     def __init__(self, info, bank=[]):
         if isinstance(info, str):
             if any(bank.count(s) > 1 for s in bank):
