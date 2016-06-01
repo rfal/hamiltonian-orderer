@@ -409,49 +409,48 @@ class TestSymbol(unittest.TestCase):
         self.assertEqual(str(b_dag), 'b*')
 
 class TestTerm(unittest.TestCase):
+    def setUp(self):
+        self.k = Symbol('k', 'real')
+        self.n = Symbol('n', 'real')
+        self.x = Symbol('x', 'real')
+        self.xi = Symbol('xi', 'complex')
+        self.zeta = Symbol('zeta', 'complex')
+        self.z = Symbol('z', 'complex')
+        self.a = Symbol('a', 'annihilation')
+        self.b = Symbol('b', 'annihilation')
+
     def test00100_instanciateZeroTerm_listOK(self):
         # Arrange
-        zero = Symbol('0', 'zero')
 
         # Act
-        t = Term([zero])
+        t = Term([ZERO])
+
         t_sym_list = t.symbols
 
         # Assert
-        self.assertEqual(t_sym_list, [zero])
+        self.assertEqual(t_sym_list, [ZERO])
 
     def test00200_instanciateEmptyTerm_equalsZeroTerm(self):
         # Arrange
-        zero = Symbol('0', 'zero')
 
         # Act
         t = Term([])
 
         # Assert
-        self.assertEqual(t.symbols, [zero])
+        self.assertEqual(t.symbols, [ZERO])
 
     def test00300_instanciateOneTerm_listOK(self):
         # Arrange
-        one = Symbol('1', 'one')
 
         # Act
-        t = Term([one])
+        t = Term([ONE])
 
         # Assert
-        self.assertEqual(t.symbols, [one])
+        self.assertEqual(t.symbols, [ONE])
 
     def test00400_instanciateOrderedTerm_listOK(self):
         # Arrange
-        zero = Symbol('0', 'zero')
-        one = Symbol('1', 'one')
-        k = Symbol('k', 'real')
-        n = Symbol('n', 'real')
-        xi = Symbol('xi', 'complex')
-        zeta = Symbol('zeta', 'complex')
-        a = Symbol('a', 'annihilation')
-        b = Symbol('b', 'annihilation')
-
-        symbols = [k, k, n, xi.conj(), xi.conj(), zeta, zeta, zeta, a.conj(), a.conj(), a, a.conj(), b, b, b.conj(), b.conj(), b.conj()]
+        symbols = [self.k, self.k, self.n, self.xi.conj(), self.xi.conj(), self.zeta, self.zeta, self.zeta, self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.b, self.b, self.b.conj(), self.b.conj(), self.b.conj()]
 
         # Act
         t = Term(symbols)
@@ -461,17 +460,8 @@ class TestTerm(unittest.TestCase):
 
     def test00500_instanciateNotOrderedTerm_listOK(self):
         # Arrange
-        zero = Symbol('0', 'zero')
-        one = Symbol('1', 'one')
-        k = Symbol('k', 'real')
-        n = Symbol('n', 'real')
-        xi = Symbol('xi', 'complex')
-        zeta = Symbol('zeta', 'complex')
-        a = Symbol('a', 'annihilation')
-        b = Symbol('b', 'annihilation')
-
-        ordered_symbols = [k, k, n, xi.conj(), xi.conj(), zeta, zeta, zeta, a.conj(), a.conj(), a, a.conj(), b, b, b.conj(), b.conj(), b.conj()]
-        symbols = [xi.conj(), zeta, k, zeta, a.conj(), xi.conj(), a.conj(), n, a, a.conj(), b, b, b.conj(), k, b.conj(), b.conj(), zeta]
+        ordered_symbols = [self.k, self.k, self.n, self.xi.conj(), self.xi.conj(), self.zeta, self.zeta, self.zeta, self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.b, self.b, self.b.conj(), self.b.conj(), self.b.conj()]
+        symbols = [self.xi.conj(), self.zeta, self.k, self.zeta, self.a.conj(), self.xi.conj(), self.a.conj(), self.n, self.a, self.a.conj(), self.b, self.b, self.b.conj(), self.k, self.b.conj(), self.b.conj(), self.zeta]
 
         # Act
         t = Term(symbols)
@@ -481,36 +471,18 @@ class TestTerm(unittest.TestCase):
 
     def test00600_instanciateTermWithZero_zeroTerm(self):
         # Arrange
-        zero = Symbol('0', 'zero')
-        one = Symbol('1', 'one')
-        k = Symbol('k', 'real')
-        n = Symbol('n', 'real')
-        xi = Symbol('xi', 'complex')
-        zeta = Symbol('zeta', 'complex')
-        a = Symbol('a', 'annihilation')
-        b = Symbol('b', 'annihilation')
-
-        symbols = [xi.conj(), zeta, k, zero, zeta, a.conj(), xi.conj(), a.conj(), n, a, a.conj(), b, b, b.conj(), k, b.conj(), b.conj(), zeta]
+        symbols = [self.xi.conj(), self.zeta, self.k, ZERO, self.zeta, self.a.conj(), self.xi.conj(), self.a.conj(), self.n, self.a, self.a.conj(), self.b, self.b, self.b.conj(), self.k, self.b.conj(), self.b.conj(), self.zeta]
 
         # Act
         t = Term(symbols)
 
         # Assert
-        self.assertEqual(t.symbols, [zero])
+        self.assertEqual(t.symbols, [ZERO])
 
     def test00700_instanciateTermWithOnes_noOnes(self):
         # Arrange
-        zero = Symbol('0', 'zero')
-        one = Symbol('1', 'one')
-        k = Symbol('k', 'real')
-        n = Symbol('n', 'real')
-        xi = Symbol('xi', 'complex')
-        zeta = Symbol('zeta', 'complex')
-        a = Symbol('a', 'annihilation')
-        b = Symbol('b', 'annihilation')
-
-        symbols_no_ones = [k, k, n, xi.conj(), xi.conj(), zeta, zeta, zeta, a.conj(), a.conj(), a, a.conj(), b, b, b.conj(), b.conj(), b.conj()]
-        symbols = [k, k, one, n, xi.conj(), one, one, xi.conj(), zeta, zeta, zeta, a.conj(), a.conj(), a, one, one, one, one, a.conj(), b, b, b.conj(), one, b.conj(), b.conj(), one, one]
+        symbols_no_ones = [self.k, self.k, self.n, self.xi.conj(), self.xi.conj(), self.zeta, self.zeta, self.zeta, self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.b, self.b, self.b.conj(), self.b.conj(), self.b.conj()]
+        symbols = [self.k, self.k, ONE, self.n, self.xi.conj(), ONE, ONE, self.xi.conj(), self.zeta, self.zeta, self.zeta, self.a.conj(), self.a.conj(), self.a, ONE, ONE, ONE, ONE, self.a.conj(), self.b, self.b, self.b.conj(), ONE, self.b.conj(), self.b.conj(), ONE, ONE]
 
         # Act
         t = Term(symbols)
@@ -520,17 +492,8 @@ class TestTerm(unittest.TestCase):
 
     def test00800_termEquality_Equal(self):
         # Arrange
-        zero = Symbol('0', 'zero')
-        one = Symbol('1', 'one')
-        k = Symbol('k', 'real')
-        n = Symbol('n', 'real')
-        xi = Symbol('xi', 'complex')
-        zeta = Symbol('zeta', 'complex')
-        a = Symbol('a', 'annihilation')
-        b = Symbol('b', 'annihilation')
-
-        ordered_symbols = [k, k, n, xi.conj(), xi.conj(), zeta, zeta, zeta, a.conj(), a.conj(), a, a.conj(), b, b, b.conj(), b.conj(), b.conj()]
-        symbols = [xi.conj(), zeta, k, zeta, a.conj(), xi.conj(), a.conj(), n, a, a.conj(), b, b, b.conj(), k, b.conj(), b.conj(), zeta]
+        ordered_symbols = [self.k, self.k, self.n, self.xi.conj(), self.xi.conj(), self.zeta, self.zeta, self.zeta, self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.b, self.b, self.b.conj(), self.b.conj(), self.b.conj()]
+        symbols = [self.xi.conj(), self.zeta, self.k, self.zeta, self.a.conj(), self.xi.conj(), self.a.conj(), self.n, self.a, self.a.conj(), self.b, self.b, self.b.conj(), self.k, self.b.conj(), self.b.conj(), self.zeta]
         
         t1 = Term(symbols)
         t2 = Term(ordered_symbols)
@@ -542,10 +505,8 @@ class TestTerm(unittest.TestCase):
 
     def test00900_nonCommutTermEquality_NotEqual(self):
         # Arrange
-        a = Symbol('a', 'annihilation')
-
-        t1 = Term([a, a.conj()])
-        t2 = Term([a.conj(), a])
+        t1 = Term([self.a, self.a.conj()])
+        t2 = Term([self.a.conj(), self.a])
 
         # Act
 
@@ -554,16 +515,7 @@ class TestTerm(unittest.TestCase):
 
     def test01000_printTermNoDouble_stringOK(self):
         # Arrange
-        zero = Symbol('0', 'zero')
-        one = Symbol('1', 'one')
-        k = Symbol('k', 'real')
-        n = Symbol('n', 'real')
-        xi = Symbol('xi', 'complex')
-        zeta = Symbol('zeta', 'complex')
-        a = Symbol('a', 'annihilation')
-        b = Symbol('b', 'annihilation')
-
-        symbols = [k, n, xi.conj(), zeta, a.conj(), a, a.conj(), b, b.conj()]
+        symbols = [self.k, self.n, self.xi.conj(), self.zeta, self.a.conj(), self.a, self.a.conj(), self.b, self.b.conj()]
         
         t = Term(symbols)
 
@@ -575,32 +527,18 @@ class TestTerm(unittest.TestCase):
 
     def test01100_groupSymbols_listOK(self):
         # Arrange
-        k = Symbol('k', 'real')
-        n = Symbol('n', 'real')
-        xi = Symbol('xi', 'complex')
-        zeta = Symbol('zeta', 'complex')
-        a = Symbol('a', 'annihilation')
-        b = Symbol('b', 'annihilation')
-
-        symbols = [k, k, n, xi.conj(), xi.conj(), zeta, zeta, zeta, a.conj(), a.conj(), a, a.conj(), b, b, b.conj(), b.conj(), b.conj()]
+        symbols = [self.k, self.k, self.n, self.xi.conj(), self.xi.conj(), self.zeta, self.zeta, self.zeta, self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.b, self.b, self.b.conj(), self.b.conj(), self.b.conj()]
 
         # Act
         t = Term(symbols)
         res = t._group_symbols()
 
         # Assert
-        self.assertEqual(res, [(k, 2), (n, 1), (xi.conj(), 2), (zeta, 3), (a.conj(), 2), (a, 1), (a.conj(), 1), (b, 2), (b.conj(), 3)])
+        self.assertEqual(res, [(self.k, 2), (self.n, 1), (self.xi.conj(), 2), (self.zeta, 3), (self.a.conj(), 2), (self.a, 1), (self.a.conj(), 1), (self.b, 2), (self.b.conj(), 3)])
 
     def test01100_printTermWithDoubles_properPowers(self):
         # Arrange
-        k = Symbol('k', 'real')
-        n = Symbol('n', 'real')
-        xi = Symbol('xi', 'complex')
-        zeta = Symbol('zeta', 'complex')
-        a = Symbol('a', 'annihilation')
-        b = Symbol('b', 'annihilation')
-
-        symbols = [k, k, n, xi.conj(), xi.conj(), zeta, zeta, zeta, a.conj(), a.conj(), a, a.conj(), b, b, b.conj(), b.conj(), b.conj()]
+        symbols = [self.k, self.k, self.n, self.xi.conj(), self.xi.conj(), self.zeta, self.zeta, self.zeta, self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.b, self.b, self.b.conj(), self.b.conj(), self.b.conj()]
         
         t = Term(symbols)
 
@@ -632,14 +570,7 @@ class TestTerm(unittest.TestCase):
 
     def test01300_numSymbolsLikeBigTerm_OK(self):
         # Arrange
-        k = Symbol('k', 'real')
-        n = Symbol('n', 'real')
-        xi = Symbol('xi', 'complex')
-        zeta = Symbol('zeta', 'complex')
-        a = Symbol('a', 'annihilation')
-        b = Symbol('b', 'annihilation')
-
-        symbols = [k, k, n, xi.conj(), xi.conj(), zeta, zeta, zeta, a.conj(), a.conj(), a, a.conj(), b, b, b.conj(), b.conj(), b.conj()]
+        symbols = [self.k, self.k, self.n, self.xi.conj(), self.xi.conj(), self.zeta, self.zeta, self.zeta, self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.b, self.b, self.b.conj(), self.b.conj(), self.b.conj()]
 
         t = Term(symbols)
 
@@ -676,6 +607,111 @@ class TestTerm(unittest.TestCase):
         self.assertEqual(res_name_b, 5)
         self.assertEqual(res_dag, 8)
         self.assertEqual(res_all, 17)
+
+    def test01400_symbolsInTerm_OK(self):
+        # Arrange
+        symbols = [self.xi.conj(), self.zeta, self.k, self.zeta, self.a.conj(), self.xi.conj(), self.a.conj(), self.n, self.a, self.a.conj(), self.b, self.b, self.b.conj(), self.k, self.b.conj(), self.b.conj(), self.zeta]
+
+        t = Term(symbols)
+
+        # Act
+        res = t._symbols_in()
+
+        # Assert
+        self.assertEqual(res, [self.k, self.n, self.xi, self.zeta, self.a, self.b])
+
+    def test01500_termsOrderLessThanZeroOneOneSymbol_True(self):
+        # Arrange
+        t1 = Term([ZERO])
+        t2 = Term([ONE])
+
+        # Act
+
+        # Assert
+        self.assertTrue(t1 < t2)
+
+    def test01600_termsOrderLessThanOneZeroOneSymbol_False(self):
+        # Arrange
+        t1 = Term([ZERO])
+        t2 = Term([ONE])
+
+        # Act
+
+        # Assert
+        self.assertFalse(t2 < t1)
+
+    def test01700_termsOrderLessThanOneRealOneSymbol_True(self):
+        # Arrange
+        t1 = Term([ONE])
+        t2 = Term([self.x])
+
+        # Act
+
+        # Assert
+        self.assertTrue(t1 < t2)
+
+    def test01800_termsOrderLessThanRealComplexOneSymbol_True(self):
+        # Arrange
+        t1 = Term([self.x])
+        t2 = Term([self.z])
+
+        # Act
+
+        # Assert
+        self.assertTrue(t1 < t2)
+
+    def test01900_termsOrderLessThanComplexAnnihilationOneSymbol_True(self):
+        # Arrange
+        t1 = Term([self.z])
+        t2 = Term([self.a])
+
+        # Act
+
+        # Assert
+        self.assertTrue(t1 < t2)
+
+    def test02000_testOrderLTAnnihilatorsOneSymbol_True(self):
+        # Arrange
+        t1 = Term([self.b])
+        t2 = Term([self.a])
+
+        # Act
+
+        # Assert
+        self.assertTrue(t1 < t2)
+
+    def test02100_testDominantSymbol_OK(self):
+        # Arrange
+        symbols = [self.xi.conj(), self.zeta, self.k, self.zeta, self.a.conj(), self.xi.conj(), self.a.conj(), self.n, self.a, self.a.conj(), self.b, self.b, self.b.conj(), self.k, self.b.conj(), self.b.conj(), self.zeta]
+
+        t = Term(symbols)
+
+        # Act
+        res = t._dominant()
+
+        # Assert
+        self.assertEqual(res, self.a)
+
+
+    def test02200_termsOrderLTComplexAnnihilatorTwoSymbols_True(self):
+        # Arrange
+        t1 = Term([self.a])
+        t2 = Term([self.x, self.a, self.a])
+
+        # Act
+
+        # Assert
+        self.assertTrue(t1 < t2)
+
+    def test02300_termsOrderLTComplexAnnihilatorTwoSymbolsConj_True(self):
+        # Arrange
+        t1 = Term([self.a])
+        t2 = Term([self.x, self.a.conj(), self.a])
+
+        # Act
+
+        # Assert
+        self.assertTrue(t1 < t2)
 
 class TestExpression(unittest.TestCase):
     pass

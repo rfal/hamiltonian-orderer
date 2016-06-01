@@ -83,6 +83,20 @@ class Term:
     def __eq__(A, B):
         return A.symbols == B.symbols
 
+    def __lt__(A, B):
+        dom_a = A._dominant()
+        dom_b = B._dominant()
+
+        deg_dom_a = A._num_symbols_like(name=dom_a.name, behavior=dom_a.behavior)
+        deg_dom_b = B._num_symbols_like(name=dom_b.name, behavior=dom_b.behavior)
+
+        if dom_a.behavior != dom_b.behavior:
+            return dom_a < dom_b
+        elif deg_dom_a != deg_dom_b:
+            return deg_dom_a < deg_dom_b
+        else:
+            return dom_a > dom_b
+
     def __str__(self):
         groups = self._group_symbols()
         str_group = lambda x: str(x[0]) + ("^" + str(x[1]) if x[1] > 1 else "")
@@ -126,6 +140,30 @@ class Term:
             symbol_selection = [s for s in symbol_selection if s.dag == dag]
 
         return len(symbol_selection)
+
+    def _symbols_in(self):
+        '''
+        Return the ordered list of Symbols in a Term with no duplicates, all symbols having dag == False.
+        '''
+        symbols_undagged = [Symbol(s.name, s.behavior, dag=False) for s in self.symbols]
+
+        res = []
+        for s in symbols_undagged:
+            if s not in res:
+                res.append(s)
+
+        return res
+
+    def _dominant(self):
+        '''
+        Return the Symbol with the highest ordering priority in a Term, regardless of its dag attribute.
+        '''
+        symbols = self._symbols_in()
+        max_behavior = max(self.symbols).behavior
+
+        max_behavior_symbols = [s for s in symbols if s.behavior == max_behavior]
+
+        return min(max_behavior_symbols)
 
 class Expression:
     pass
