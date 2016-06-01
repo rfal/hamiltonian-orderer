@@ -67,6 +67,14 @@ class Symbol:
 
             return res
 
+    def __mul__(a, b):
+        if isinstance(b, Symbol):
+            return Term([a, b])
+        elif isinstance(b, Term):
+            return Term([a] + b.symbols)
+        else:
+            raise Exception('Symbols cannot be multiplied with ' + type(b) + 's.')
+
     def conj(self):
         if self.name not in self._hermitian_behaviors:
             return Symbol(self.name, self.behavior, not self.dag)
@@ -198,7 +206,12 @@ class Term:
         return ' '.join(map(str_group, groups))
 
     def __mul__(A, B):
-        return Term(A.symbols + B.symbols)
+        if isinstance(B, Term):
+            return Term(A.symbols + B.symbols)
+        elif isinstance(B, Symbol):
+            return Term(A.symbols + [B])
+        else:
+            raise Exception('Termss cannot be multiplied with ' + type(B) + 's.')
 
     def _group_symbols(self):
         '''
