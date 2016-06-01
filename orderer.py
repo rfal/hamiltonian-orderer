@@ -40,15 +40,14 @@ class Symbol:
                 else:
                     return False
 
-
-    def __le__(a, b):
-        return a < b or a == b or a.conj() == b or a.behavior == "zero" or a.behavior == "one" # Just because zero and one can have several names
-
-    def __gt__(a,b):
+    def __gt__(a, b):
         return b < a
 
-    def __ge__(a,b):
-        return b <= a
+    def __le__(a, b):
+        return not a > b
+
+    def __ge__(a, b):
+        return not a < b
 
     def __str__(self):
         if self.behavior == 'zero':
@@ -84,29 +83,68 @@ class Term:
         return A.symbols == B.symbols
 
     def __lt__(A, B):
+        '''
+        Recursively determine if A is 'smaller' than B, meaning that A would be naturally written after B.
+        '''
+        # Base case
+        if ZERO in B.symbols:
+            return False
+
+        # First compare the total degree of A and B according to complex and annihilation symbols (becauses complex symbols are supposed to vary in time, so that they count)
+        # Note that if this comparison holds through the recursion
+        deg_a = A._num_symbols_like(behavior='complex') + A._num_symbols_like(behavior='annihilation')
+        deg_b = B._num_symbols_like(behavior='complex') + B._num_symbols_like(behavior='annihilation')
+
+        if deg_a != deg_b:
+            return deg_a < deg_b
+
+        # From now on we only consider the dominant symbol in A and B
         dom_a = A._dominant()
         dom_b = B._dominant()
 
+        # First compare the dominant symbols' behaviors
+        if dom_a.behavior != dom_b.behavior:
+            return dom_a < dom_b
+
+        # Then compare their degree according to the dominant symbol
         deg_dom_a = A._num_symbols_like(name=dom_a.name, behavior=dom_a.behavior)
         deg_dom_b = B._num_symbols_like(name=dom_b.name, behavior=dom_b.behavior)
 
-        num_dags_a = A._num_symbols_like(name=dom_a.name, behavior=dom_a.behavior, dag=True)
-        num_dags_b = B._num_symbols_like(name=dom_b.name, behavior=dom_b.behavior, dag=True)
-
-        if dom_a.behavior != dom_b.behavior:
-            return dom_a < dom_b
-        elif deg_dom_a != deg_dom_b:
+        if deg_dom_a != deg_dom_b:
             return deg_dom_a < deg_dom_b
-        elif dom_a.name != dom_b.name:
+
+        # Then compare the name of the dominant symbol (reverse order)
+        if dom_a.name != dom_b.name:
             return dom_a.name > dom_b.name
-        elif num_dags_a != num_dags_b:
+
+        dom = dom_a # == dom_b
+
+        # Then compare the number of daggers on the dominant symbol
+        num_dags_a = A._num_symbols_like(name=dom.name, behavior=dom.behavior, dag=True)
+        num_dags_b = B._num_symbols_like(name=dom.name, behavior=dom.behavior, dag=True)
+
+        if num_dags_a != num_dags_b:
             return num_dags_a < num_dags_b
-        else:
-            same_normalness = (not A._more_normal_than(B, dom_a)) and (not B._more_normal_than(A, dom_b))
-            if not same_normalness:
-                return B._more_normal_than(A, dom_b)
-            else:
-                return A._delete_dominant() < B._delete_dominant()
+
+        # Then compare the "normalness" of both terms according to the dominant symbol
+        same_normalness = (not A._more_normal_than(B, dom)) and (not B._more_normal_than(A, dom))
+        if not same_normalness:
+            return B._more_normal_than(A, dom)
+
+        # Otherwise delete the dominant part and compare the rest
+        return A._delete_dominant() < B._delete_dominant()
+
+    def __gt__(A, B):
+        return B < A
+
+    def __le__(A, B):
+        return not A > B
+
+    def __ge__(A, B):
+        return not A < B
+
+    def __ne__(A, B):
+        return not A == B
 
     def __str__(self):
         groups = self._group_symbols()
@@ -176,31 +214,31 @@ class Term:
 
         return min(max_behavior_symbols)
 
-    def _more_normal_than(self, t, sym):
+    def _more_normal_than(A, B, sym):
         '''
-        Return True if the normal ordering of dagged operators is better respected in self than in Term t regarding Symbol sym.
+        Return True if the normal ordering of dagged operators is better respected in A than in B regarding Symbol sym.
         '''
         if sym.behavior != 'annihilation':
             return False
 
-        sym_list1 = [s for s in self.symbols if s == sym or s == sym.conj()]
-        sym_list2 = [s for s in t.symbols if s == sym or s == sym.conj()]
+        sym_list_a = [s for s in A.symbols if s == sym or s == sym.conj()]
+        sym_list_b = [s for s in B.symbols if s == sym or s == sym.conj()]
 
-        if len(sym_list1) != len(sym_list2):
+        if len(sym_list_a) != len(sym_list_b):
             raise Exception('Compared terms do not have the same order in ' + sym.name + '.')
 
-        n = len(sym_list1)
+        n = len(sym_list_a)
         go_on = True
         k = 0
 
         while go_on and k < n:
-            d1 = sym_list1[k].dag
-            d2 = sym_list2[k].dag
+            d_a = sym_list_a[k].dag
+            d_b = sym_list_b[k].dag
 
-            if d1 and not d2 :
+            if d_a and not d_b :
                 return True
 
-            go_on = (d1 == d2)
+            go_on = (d_a == d_b)
             k += 1
 
         return False

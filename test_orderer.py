@@ -680,6 +680,26 @@ class TestTerm(unittest.TestCase):
         # Assert
         self.assertTrue(t1 < t2)
 
+    def test02010_testOrderLTAnnihilatorsDifferentTotalDegree_True(self):
+        # Arrange
+        t1 = Term([self.a, self.b, self.b])
+        t2 = Term([self.a, self.b])
+
+        # Act
+
+        # Assert
+        self.assertTrue(t2 < t1)
+
+    def test02020_testOrderLTAnnihilatorsComplexDifferentTotalDegree_True(self):
+        # Arrange
+        t1 = Term([self.a, self.xi, self.xi.conj()])
+        t2 = Term([self.a, self.xi])
+
+        # Act
+
+        # Assert
+        self.assertTrue(t2 < t1)
+
     def test02100_testDominantSymbol_OK(self):
         # Arrange
         symbols = [self.xi.conj(), self.zeta, self.k, self.zeta, self.a.conj(), self.xi.conj(), self.a.conj(), self.n, self.a, self.a.conj(), self.b, self.b, self.b.conj(), self.k, self.b.conj(), self.b.conj(), self.zeta]
@@ -798,6 +818,56 @@ class TestTerm(unittest.TestCase):
 
         # Assert
         self.assertTrue(t1 < t2)
+
+    def test03100_termsOrderLTEqualTerms_False(self):
+        # Arrange
+        t1 = Term([self.n, self.xi.conj(), self.xi, self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.a, self.a.conj(), self.b, self.b])
+
+        # Act
+
+        # Assert
+        self.assertFalse(t1 < t1)
+
+    def test03200_termsOrderLTE_True(self):
+        # Arrange
+        t1 = Term([self.n, self.xi.conj(), self.xi, self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.a, self.a.conj(), self.b, self.b])
+        t2 = Term([self.n, self.n, self.xi, self.xi.conj(), self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.a, self.a.conj(), self.b, self.b])
+
+        # Act
+
+        # Assert
+        self.assertTrue(t1 <= t2)
+        self.assertTrue(t1 <= t1)
+
+    def test03300_termsOrderGTAnnihilForthDepthComplexDisordered_True(self):
+        # Arrange
+        t1 = Term([self.n, self.xi.conj(), self.xi, self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.a, self.a.conj(), self.b, self.b])
+        t2 = Term([self.n, self.n, self.xi, self.xi.conj(), self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.a, self.a.conj(), self.b, self.b])
+
+        # Act
+
+        # Assert
+        self.assertTrue(t2 > t1)
+
+    def test03400_termsOrderGTEqualTerms_False(self):
+        # Arrange
+        t1 = Term([self.n, self.xi.conj(), self.xi, self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.a, self.a.conj(), self.b, self.b])
+
+        # Act
+
+        # Assert
+        self.assertFalse(t1 > t1)
+
+    def test03500_termsOrderGTE_True(self):
+        # Arrange
+        t1 = Term([self.n, self.xi.conj(), self.xi, self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.a, self.a.conj(), self.b, self.b])
+        t2 = Term([self.n, self.n, self.xi, self.xi.conj(), self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.a, self.a.conj(), self.b, self.b])
+
+        # Act
+
+        # Assert
+        self.assertTrue(t2 >= t1)
+        self.assertTrue(t1 >= t1)
 
 class TestExpression(unittest.TestCase):
     pass
