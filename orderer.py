@@ -11,6 +11,9 @@ class Symbol:
         if behavior not in self._behaviors:
             raise Exception('Behavior "' + behavior + '" not implemented.')
 
+        if ' ' in name:
+            raise Exception("A Symbol's name cannot contain spaces.")
+
         self.name = name
         self.behavior = behavior
 
@@ -71,13 +74,52 @@ ZERO = Symbol('0', 'zero')
 ONE = Symbol('1', 'one')
 
 class Term:
-    def __init__(self, symbols):
-        if not symbols or ZERO in symbols:
-            self.symbols = [ZERO]
-        elif symbols == [ONE]:
-            self.symbols = symbols
+    def __init__(self, info, bank=[]):
+        if isinstance(info, str):
+            if any(bank.count(s) > 1 for s in bank):
+                raise Exception('The symbol bank given is ambiguous.')
+
+            if ZERO not in bank:
+                bank.append(ZERO)
+
+            if ONE not in bank:
+                bank.append(ONE)
+
+            infos = info.split(' ')
+
+            symbols = []
+
+            for i in infos:
+                i_sym_pow = i.split('^')
+                i_sym, i_pow = (i_sym_pow[0], int(i_sym_pow[1])) if '^' in i else (i, 1)
+
+                if i_sym[-1] == '*':
+                    i_sym = i_sym[:-1]
+                    dag = True
+                else:
+                    dag = False
+                
+                try:
+                    new_s = next(s for s in bank if s.name == i_sym)
+                except StopIteration:
+                    raise Exception("Unknown symbol '" + i_sym + "'.")
+
+                if dag:
+                    new_s = new_s.conj()
+                
+                symbols.extend([new_s] * i_pow)
+
+            self.__init__(symbols)
+        elif isinstance(info, list):
+            symbols = info
+            if not symbols or ZERO in symbols:
+                self.symbols = [ZERO]
+            elif symbols == [ONE]:
+                self.symbols = symbols
+            else:
+                self.symbols = sorted([s for s in symbols if s != ONE]) # Thank God sorted() is stable!
         else:
-            self.symbols = sorted([s for s in symbols if s != ONE]) # Thank God sorted() is stable!
+            raise Exception('Term constructor argument should be a string or a list of Symbols.')
 
     def __eq__(A, B):
         return A.symbols == B.symbols
@@ -150,7 +192,7 @@ class Term:
         groups = self._group_symbols()
         str_group = lambda x: str(x[0]) + ("^" + str(x[1]) if x[1] > 1 else "")
         
-        return '.'.join(map(str_group, groups))
+        return ' '.join(map(str_group, groups))
 
     def _group_symbols(self):
         '''

@@ -1,4 +1,5 @@
 import unittest
+from time import sleep
 from orderer import *
 
 class TestSymbol(unittest.TestCase):
@@ -84,6 +85,14 @@ class TestSymbol(unittest.TestCase):
 
         # Assert
         self.assertRaises(Exception, lambda: Symbol('a', 'ThisBehaviorWillNeverExist'))
+
+    def test00810_instanciateSymbolWithSpaceInName_error(self):
+        # Arrange
+
+        # Act
+
+        # Assert
+        self.assertRaises(Exception, lambda: Symbol('a e', 'annihilation'))
 
     def test00900_instanciateTwoEqualSymbols_equal(self):
         # Arrange
@@ -419,6 +428,8 @@ class TestTerm(unittest.TestCase):
         self.a = Symbol('a', 'annihilation')
         self.b = Symbol('b', 'annihilation')
 
+        self.bank = [self.k, self.n, self.x, self.xi, self.zeta, self.z, self.a, self.b]
+
     def test00100_instanciateZeroTerm_listOK(self):
         # Arrange
 
@@ -523,7 +534,7 @@ class TestTerm(unittest.TestCase):
         res = str(t)
 
         # Assert
-        self.assertEqual(res, "k.n.xi*.zeta.a*.a.a*.b.b*")
+        self.assertEqual(res, "k n xi* zeta a* a a* b b*")
 
     def test01100_groupSymbols_listOK(self):
         # Arrange
@@ -546,7 +557,7 @@ class TestTerm(unittest.TestCase):
         res = str(t)
 
         # Assert
-        self.assertEqual(res, "k^2.n.xi*^2.zeta^3.a*^2.a.a*.b^2.b*^3")
+        self.assertEqual(res, "k^2 n xi*^2 zeta^3 a*^2 a a* b^2 b*^3")
 
     def test01200_numSymbolsLikeZero_OK(self):
         # Arrange
@@ -869,6 +880,118 @@ class TestTerm(unittest.TestCase):
         self.assertTrue(t2 >= t1)
         self.assertTrue(t1 >= t1)
 
+    def test03600_termConstructorWrongIdType_error(self):
+        # Arrange
+        info = 24
+
+        # Act
+
+        # Assert
+        self.assertRaises(Exception, lambda: Term(info))
+
+    def test03700_stringToTermOneSymbolZero_OK(self):
+        # Arrange
+        bank = []
+        info = '0'
+
+        # Act
+        res = Term(info)
+        expected_res = Term([ZERO])
+
+        # Assert
+        self.assertEqual(res, expected_res)
+
+    def test03800_stringToTermOneSymbolOne_OK(self):
+        # Arrange
+        bank = []
+        info = '1'
+
+        # Act
+        res = Term(info)
+        expected_res = Term([ONE])
+
+        # Assert
+        self.assertEqual(res, expected_res)
+
+    def test03900_stringToTermOneSymbolAnnihilator_OK(self):
+        # Arrange
+        bank = [self.a]
+        info = 'a'
+
+        # Act
+        res = Term(info, bank)
+        expected_res = Term([self.a])
+
+        # Assert
+        self.assertEqual(res, expected_res)
+
+    def test04000_stringToTermAmbiguousBank_error(self):
+        # Arrange
+        bank = [self.a, self.a]
+        info = 'a'
+
+        # Act
+
+        # Assert
+        self.assertRaises(Exception, lambda: Term(info, bank))
+
+    def test04100_stringToTermTwoSymbolsAnnihilator_OK(self):
+        # Arrange
+        bank = [self.a]
+        info = 'a a'
+
+        # Act
+        res = Term(info, bank)
+        expected_res = Term([self.a, self.a])
+
+        # Assert
+        self.assertEqual(res, expected_res)
+
+    def test04200_stringToTermSymbolNotInBank_error(self):
+        # Arrange
+        bank = [self.a]
+        info = 'b'
+
+        # Act
+
+        # Assert
+        self.assertRaises(Exception, lambda: Term(info, bank))
+
+    def test04300_stringToTermSquaredSymbol_OK(self):
+        # Arrange
+        info = 'a^2'
+
+        # Act
+        res = Term(info, self.bank)
+        expected_res = Term([self.a, self.a])
+
+        # Assert
+        self.assertEqual(res, expected_res)
+
+    def test04400_stringToTermDaggedSymbol_OK(self):
+        # Arrange
+        info = 'a*'
+
+        # Act
+        res = Term(info, self.bank)
+        expected_res = Term([self.a.conj()])
+
+        # Assert
+        self.assertEqual(res, expected_res)
+
+    def test04500_stringToTermAllAtOnce_OK(self):
+        # Arrange
+        symbols = [self.k, self.k, self.n, self.xi.conj(), self.xi.conj(), self.zeta, self.zeta, self.zeta, self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.b, self.b, self.b.conj(), self.b.conj(), self.b.conj()]
+
+        t = Term(symbols)
+        t_str = 'k^2 n xi*^2 zeta^3 a*^2 a a* b^2 b*^3'
+
+        # Act
+        res = Term(t_str, self.bank)
+
+        # Assert
+        self.assertEqual(res, t)
+
 class TestExpression(unittest.TestCase):
     pass
 
@@ -877,14 +1000,18 @@ if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestSymbol)
     unittest.TextTestRunner(verbosity=2).run(suite)
 
+    sleep(1)
+
     print("\n======================================================================\n")
 
     print(">>> Testing Term class...\n")
     suite = unittest.TestLoader().loadTestsFromTestCase(TestTerm)
     unittest.TextTestRunner(verbosity=2).run(suite)
 
-    print("\n======================================================================\n")
+    # sleep(1)
+
+    # print("\n======================================================================\n")
     
-    print(">>> Testing Expression class...\n")
-    suite = unittest.TestLoader().loadTestsFromTestCase(TestExpression)
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    # print(">>> Testing Expression class...\n")
+    # suite = unittest.TestLoader().loadTestsFromTestCase(TestExpression)
+    # unittest.TextTestRunner(verbosity=2).run(suite)
