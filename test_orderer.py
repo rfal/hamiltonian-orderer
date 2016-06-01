@@ -428,18 +428,6 @@ class TestSymbol(unittest.TestCase):
         # Assert
         self.assertEqual(res, Term([a, b]))
 
-    def test02600_mulSymbolTerm_TermOK(self):
-        # Arrange
-        a = Symbol('a', 'annihilation')
-        b = Symbol('b', 'annihilation')
-        t = Term([b])
-
-        # Act
-        res = a * t
-
-        # Assert
-        self.assertEqual(res, Term([a, b]))
-
 class TestTerm(unittest.TestCase):
     def setUp(self):
         self.k = Symbol('k', 'real')
@@ -1036,6 +1024,16 @@ class TestTerm(unittest.TestCase):
 
         # Assert
         self.assertEqual(res, Term([self.a, self.b]))
+
+    def test04800_mulSymbolTerm_TermOK(self):
+        # Arrange
+        t = Term([self.a])
+
+        # Act
+        res = self.b * t
+
+        # Assert
+        self.assertEqual(res, Term([self.b, self.a]))
 
 class TestExpression(unittest.TestCase):
     pass

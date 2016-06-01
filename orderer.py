@@ -70,10 +70,8 @@ class Symbol:
     def __mul__(a, b):
         if isinstance(b, Symbol):
             return Term([a, b])
-        elif isinstance(b, Term):
-            return Term([a] + b.symbols)
         else:
-            raise Exception('Symbols cannot be multiplied with ' + type(b) + 's.')
+            return NotImplemented
 
     def conj(self):
         if self.name not in self._hermitian_behaviors:
@@ -211,7 +209,13 @@ class Term:
         elif isinstance(B, Symbol):
             return Term(A.symbols + [B])
         else:
-            raise Exception('Termss cannot be multiplied with ' + type(B) + 's.')
+            return NotImplemented
+
+    def __rmul__(A, B):
+        if isinstance(B, Term):
+            return Term(B.symbols + A.symbols)
+        elif isinstance(B, Symbol):
+            return Term([B] + A.symbols)
 
     def _group_symbols(self):
         '''
