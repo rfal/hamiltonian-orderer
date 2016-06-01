@@ -693,7 +693,7 @@ class TestTerm(unittest.TestCase):
         self.assertEqual(res, self.a)
 
 
-    def test02200_termsOrderLTComplexAnnihilatorTwoSymbols_True(self):
+    def test02200_termsOrderLTAnnihilatorsTwoSymbols_True(self):
         # Arrange
         t1 = Term([self.a])
         t2 = Term([self.x, self.a, self.a])
@@ -703,10 +703,96 @@ class TestTerm(unittest.TestCase):
         # Assert
         self.assertTrue(t1 < t2)
 
-    def test02300_termsOrderLTComplexAnnihilatorTwoSymbolsConj_True(self):
+    def test02300_termsOrderLTAnnihilatorsTwoSymbolsConj_True(self):
         # Arrange
-        t1 = Term([self.a])
-        t2 = Term([self.x, self.a.conj(), self.a])
+        t1 = Term([self.a.conj(), self.a])
+        t2 = Term([self.a.conj(), self.a.conj()])
+
+        # Act
+
+        # Assert
+        self.assertTrue(t1 < t2)
+
+    def test02400_moreNormalThan_OK(self):
+        # Arrange
+        t1 = Term([self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.a, self.a.conj()])
+        t2 = Term([self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.a.conj(), self.a])
+
+        # Act
+        res21 = t2._more_normal_than(t1, self.a)
+        res12 = t1._more_normal_than(t2, self.a)
+        res11 = t1._more_normal_than(t1, self.a)
+
+        # Assert
+        self.assertTrue(res21)
+        self.assertFalse(res12)
+        self.assertFalse(res11)
+
+    def test02500_moreNormalThanDifferentLengths_error(self):
+        # Arrange
+        t1 = Term([self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.a, self.a.conj()])
+        t2 = Term([self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.a.conj(), self.a, self.a])
+
+        # Act
+
+        # Assert
+        self.assertRaises(Exception, lambda: t1._more_normal_than(t2, self.a))
+
+    def test02600_termsOrderLTAnnihilNormalOrder_True(self):
+        # Arrange
+        t1 = Term([self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.a, self.a.conj()])
+        t2 = Term([self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.a.conj(), self.a])
+
+        # Act
+
+        # Assert
+        self.assertTrue(t1 < t2)
+
+    def test02700_deleteDominant_OK(self):
+        # Arrange
+        t = Term([self.k, self.n, self.n, self.xi, self.a.conj(), self.a, self.a.conj(), self.a, self.a, self.b, self.b])
+
+        # Act
+        res = t._delete_dominant()
+
+        # Assert
+        self.assertEqual(res, Term([self.k, self.n, self.n, self.xi, self.b, self.b]))
+
+    def test02800_termsOrderLTAnnihilSecondDepth_True(self):
+        # Arrange
+        t1 = Term([self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.a, self.a.conj(), self.b, self.b])
+        t2 = Term([self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.a, self.a.conj(), self.b.conj(), self.b])
+
+        # Act
+
+        # Assert
+        self.assertTrue(t1 < t2)
+
+    def test02800_termsOrderLTAnnihilThirdDepth_True(self):
+        # Arrange
+        t1 = Term([self.xi.conj(), self.xi, self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.a, self.a.conj(), self.b, self.b])
+        t2 = Term([self.xi.conj(), self.xi.conj(), self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.a, self.a.conj(), self.b, self.b])
+
+
+        # Act
+
+        # Assert
+        self.assertTrue(t1 < t2)
+
+    def test02900_termsOrderLTAnnihilForthDepth_True(self):
+        # Arrange
+        t1 = Term([self.n, self.xi.conj(), self.xi, self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.a, self.a.conj(), self.b, self.b])
+        t2 = Term([self.n, self.n, self.xi.conj(), self.xi, self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.a, self.a.conj(), self.b, self.b])
+
+        # Act
+
+        # Assert
+        self.assertTrue(t1 < t2)
+
+    def test03000_termsOrderLTAnnihilForthDepthComplexDisordered_True(self):
+        # Arrange
+        t1 = Term([self.n, self.xi.conj(), self.xi, self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.a, self.a.conj(), self.b, self.b])
+        t2 = Term([self.n, self.n, self.xi, self.xi.conj(), self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.a, self.a.conj(), self.b, self.b])
 
         # Act
 

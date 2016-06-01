@@ -78,7 +78,7 @@ class Term:
         elif symbols == [ONE]:
             self.symbols = symbols
         else:
-            self.symbols = sorted([s for s in symbols if s != ONE]) # Thank God sorted() is stable! (it preserves the original order of equivalent keys)
+            self.symbols = sorted([s for s in symbols if s != ONE]) # Thank God sorted() is stable!
 
     def __eq__(A, B):
         return A.symbols == B.symbols
@@ -90,12 +90,23 @@ class Term:
         deg_dom_a = A._num_symbols_like(name=dom_a.name, behavior=dom_a.behavior)
         deg_dom_b = B._num_symbols_like(name=dom_b.name, behavior=dom_b.behavior)
 
+        num_dags_a = A._num_symbols_like(name=dom_a.name, behavior=dom_a.behavior, dag=True)
+        num_dags_b = B._num_symbols_like(name=dom_b.name, behavior=dom_b.behavior, dag=True)
+
         if dom_a.behavior != dom_b.behavior:
             return dom_a < dom_b
         elif deg_dom_a != deg_dom_b:
             return deg_dom_a < deg_dom_b
+        elif dom_a.name != dom_b.name:
+            return dom_a.name > dom_b.name
+        elif num_dags_a != num_dags_b:
+            return num_dags_a < num_dags_b
         else:
-            return dom_a > dom_b
+            same_normalness = (not A._more_normal_than(B, dom_a)) and (not B._more_normal_than(A, dom_b))
+            if not same_normalness:
+                return B._more_normal_than(A, dom_b)
+            else:
+                return A._delete_dominant() < B._delete_dominant()
 
     def __str__(self):
         groups = self._group_symbols()
@@ -164,6 +175,44 @@ class Term:
         max_behavior_symbols = [s for s in symbols if s.behavior == max_behavior]
 
         return min(max_behavior_symbols)
+
+    def _more_normal_than(self, t, sym):
+        '''
+        Return True if the normal ordering of dagged operators is better respected in self than in Term t regarding Symbol sym.
+        '''
+        if sym.behavior != 'annihilation':
+            return False
+
+        sym_list1 = [s for s in self.symbols if s == sym or s == sym.conj()]
+        sym_list2 = [s for s in t.symbols if s == sym or s == sym.conj()]
+
+        if len(sym_list1) != len(sym_list2):
+            raise Exception('Compared terms do not have the same order in ' + sym.name + '.')
+
+        n = len(sym_list1)
+        go_on = True
+        k = 0
+
+        while go_on and k < n:
+            d1 = sym_list1[k].dag
+            d2 = sym_list2[k].dag
+
+            if d1 and not d2 :
+                return True
+
+            go_on = (d1 == d2)
+            k += 1
+
+        return False
+
+    def _delete_dominant(self):
+        '''
+        Return the same Term with all occurencces of its dominant symbol deleted.
+        '''
+        dom = self._dominant()
+        new_symbols = [s for s in self.symbols if s != dom and s.conj() != dom]
+
+        return Term(new_symbols)
 
 class Expression:
     pass
