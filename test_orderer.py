@@ -1084,6 +1084,123 @@ class TestTerm(unittest.TestCase):
 
         # Assert
         self.assertEqual(res, Term('k^2 x xi^2 xi* zeta* a*^2 a^2 b* b^2 b* b'))
+
+    def test05700_isNormalOrderedOneSymbolEmptyTerm_OK(self):
+        # Arrange
+        symbol = self.a
+        t = Term()
+
+        # Act
+
+        # Assert
+        self.assertTrue(t.is_normal_ordered(symbol=symbol))
+
+    def test05800_isNormalOrderedOneSymbolTermOne_OK(self):
+        # Arrange
+        symbol = self.a
+        t = Term('1')
+
+        # Act
+
+        # Assert
+        self.assertTrue(t.is_normal_ordered(symbol=symbol))
+
+    def test05900_isNormalOrderedOneSymbolOnlyA_True(self):
+        # Arrange
+        symbol = self.a
+        t = Term('a* a* a* a a a')
+
+        # Act
+
+        # Assert
+        self.assertTrue(t.is_normal_ordered(symbol=symbol))
+    
+    def test06000_isNormalOrderedOneSymbolOnlyA_False(self):
+        # Arrange
+        symbol = self.a
+        t = Term('a* a* a a a* a')
+
+        # Act
+
+        # Assert
+        self.assertFalse(t.is_normal_ordered(symbol=symbol))
+
+    def test06100_isNormalOrderedOneSymbol_True(self):
+        # Arrange
+        symbol = self.a
+        t = Term('a* a* a* a a a b* b* b b*')
+
+        # Act
+
+        # Assert
+        self.assertTrue(t.is_normal_ordered(symbol=symbol))
+    
+    def test06200_isNormalOrderedOneSymbol_False(self):
+        # Arrange
+        symbol = self.a
+        t = Term('a* a* a a a* a b* b* b b')
+
+        # Act
+
+        # Assert
+        self.assertFalse(t.is_normal_ordered(symbol=symbol))
+
+    def test06300_isNormalOrderedAllSymbolsEmptyTerm_OK(self):
+        # Arrange
+        t = Term()
+
+        # Act
+
+        # Assert
+        self.assertTrue(t.is_normal_ordered())
+
+    def test05800_isNormalOrderedAllSymbolsTermOne_OK(self):
+        # Arrange
+        t = Term('1')
+
+        # Act
+
+        # Assert
+        self.assertTrue(t.is_normal_ordered())
+
+    def test05900_isNormalOrderedAllSymbolsOnlyA_True(self):
+        # Arrange
+        t = Term('a* a* a* a a a')
+
+        # Act
+
+        # Assert
+        self.assertTrue(t.is_normal_ordered())
+    
+    def test06000_isNormalOrderedAllSymbolsOnlyA_False(self):
+        # Arrange
+        symbol = self.a
+        t = Term('a* a* a a a* a')
+
+        # Act
+
+        # Assert
+        self.assertFalse(t.is_normal_ordered())
+
+    def test06100_isNormalOrderedAllSymbols_True(self):
+        # Arrange
+        symbol = self.a
+        t = Term('k n xi xi* zeta a* a* a* a a a b* b* b b')
+
+        # Act
+
+        # Assert
+        self.assertTrue(t.is_normal_ordered())
+    
+    def test06200_isNormalOrderedAllSymbols_False(self):
+        # Arrange
+        symbol = self.a
+        t = Term('k n xi xi* zeta  a* a* a a a* a b* b* b b* b')
+
+        # Act
+
+        # Assert
+        self.assertFalse(t.is_normal_ordered())
             
 class TestExpression(unittest.TestCase):
     def setUp(self):

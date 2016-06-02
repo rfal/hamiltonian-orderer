@@ -249,6 +249,31 @@ class Term:
 
         return Term(symbols)
 
+    def is_normal_ordered(self, symbol=None):
+        if symbol is not None:
+            symbols = [s for s in self.symbols if s.name == symbol.name and s.behavior == symbol.behavior]
+            switch = False
+
+            for s in symbols:
+                if not switch:
+                    switch = not s.dag
+                else:
+                    if s.dag:
+                        break
+            else:
+                return True
+
+            return False
+        else:
+            for s in self._symbols_in():
+                if not self.is_normal_ordered(symbol=s):
+                    break
+            else:
+                return True
+
+            return False
+        
+
     def _group_symbols(self):
         '''
         Groups identical symbols into a couple (Symbol, power) for treatment by _str_grouped_symbols.
