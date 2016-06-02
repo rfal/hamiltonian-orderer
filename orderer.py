@@ -114,6 +114,9 @@ class Term:
                 i_sym_pow = i.split('^')
                 i_sym, i_pow = (i_sym_pow[0], int(i_sym_pow[1])) if '^' in i else (i, 1)
 
+                if not i_sym:
+                    i_sym = '1' # Simplest way to implement the fact that an empty product is 1
+
                 if i_sym[-1] == '*':
                     i_sym = i_sym[:-1]
                     dag = True
@@ -135,8 +138,8 @@ class Term:
             symbols = info
             if not symbols or ZERO in symbols:
                 self.symbols = [ZERO]
-            elif symbols == [ONE]:
-                self.symbols = symbols
+            elif all(s == ONE for s in symbols):
+                self.symbols = [ONE]
             else:
                 self.symbols = sorted([s for s in symbols if s != ONE]) # Thank God sorted() is stable!
         else:
@@ -330,11 +333,25 @@ class Term:
         return Term(new_symbols)
 
 class Expression:
-    def __init__(self, terms=[]):
-        if not terms or Term() in terms:
-            self.terms = [Term()] # An empty sum is zero
+    def __init__(self, info=[], bank=None):
+        if bank is None:
+            bank = Term._default_bank
+
+        if isinstance(info, str):
+            if not info:
+                self.__init__()
+            else:
+                infos = info.split('+')
+                terms = [Term(i) for i in infos]
+                self.__init__(terms)
+        elif isinstance(info, list):
+            if not info or all(t == Term() for t in info):
+                self.terms = [Term()] # An empty sum is zero
+            else:
+                self.terms = sorted(info)[::-1] # Because we want the Terms in decreasing order
+                self.terms = [t for t in self.terms if t != Term()] # then we remove all occurences of 0
         else:
-            self.terms = sorted(terms)[::-1] # Because we want the Terms in decreasing order
+            raise Exception('Expression constructor argument should be a string or a list of Terms.')
 
     def __eq__(E, F):
         return E.terms == F.terms
@@ -351,3 +368,26 @@ class Expression:
 
     def __radd__(E, F):
         return E + F
+
+    def __mul__(E, F):
+        if isinstance(F, Symbol) or isinstance(F, Term):
+            return Expression([t * F for t in E.terms])
+        elif isinstance(F, Expression):
+            terms = []
+
+            for e in E.terms:
+                for t in F.terms:
+                    terms.append(e * t)
+
+            return Expression(terms)
+        else:
+            return NotImplemented
+
+    def __rmul__(E, F):
+        if isinstance(F, Symbol) or isinstance(F, Term):
+            return Expression([F * t for t in E.terms])
+        else:
+            return NotImplemented
+
+    def __str__(self):
+        return ' + '.join(map(str, self.terms))

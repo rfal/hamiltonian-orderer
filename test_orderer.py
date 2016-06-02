@@ -558,7 +558,7 @@ class TestTerm(unittest.TestCase):
         # Assert
         self.assertEqual(res, [(self.k, 2), (self.n, 1), (self.xi.conj(), 2), (self.zeta, 3), (self.a.conj(), 2), (self.a, 1), (self.a.conj(), 1), (self.b, 2), (self.b.conj(), 3)])
 
-    def test01100_printTermWithDoubles_properPowers(self):
+    def test01200_printTermWithDoubles_properPowers(self):
         # Arrange
         symbols = [self.k, self.k, self.n, self.xi.conj(), self.xi.conj(), self.zeta, self.zeta, self.zeta, self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.b, self.b, self.b.conj(), self.b.conj(), self.b.conj()]
         
@@ -570,7 +570,7 @@ class TestTerm(unittest.TestCase):
         # Assert
         self.assertEqual(res, "k^2 n xi*^2 zeta^3 a*^2 a a* b^2 b*^3")
 
-    def test01200_numSymbolsLikeZero_OK(self):
+    def test01300_numSymbolsLikeZero_OK(self):
         # Arrange
         t = Term([ZERO])
 
@@ -590,7 +590,7 @@ class TestTerm(unittest.TestCase):
         self.assertEqual(res_behavior_one, 0)
         self.assertEqual(res_dag_one, 1)
 
-    def test01300_numSymbolsLikeBigTerm_OK(self):
+    def test01400_numSymbolsLikeBigTerm_OK(self):
         # Arrange
         symbols = [self.k, self.k, self.n, self.xi.conj(), self.xi.conj(), self.zeta, self.zeta, self.zeta, self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.b, self.b, self.b.conj(), self.b.conj(), self.b.conj()]
 
@@ -630,7 +630,7 @@ class TestTerm(unittest.TestCase):
         self.assertEqual(res_dag, 8)
         self.assertEqual(res_all, 17)
 
-    def test01400_symbolsInTerm_OK(self):
+    def test01500_symbolsInTerm_OK(self):
         # Arrange
         symbols = [self.xi.conj(), self.zeta, self.k, self.zeta, self.a.conj(), self.xi.conj(), self.a.conj(), self.n, self.a, self.a.conj(), self.b, self.b, self.b.conj(), self.k, self.b.conj(), self.b.conj(), self.zeta]
 
@@ -642,7 +642,7 @@ class TestTerm(unittest.TestCase):
         # Assert
         self.assertEqual(res, [self.k, self.n, self.xi, self.zeta, self.a, self.b])
 
-    def test01500_termsOrderLessThanZeroOneOneSymbol_True(self):
+    def test01600_termsOrderLessThanZeroOneOneSymbol_True(self):
         # Arrange
         t1 = Term([ZERO])
         t2 = Term([ONE])
@@ -652,7 +652,7 @@ class TestTerm(unittest.TestCase):
         # Assert
         self.assertTrue(t1 < t2)
 
-    def test01600_termsOrderLessThanOneZeroOneSymbol_False(self):
+    def test01700_termsOrderLessThanOneZeroOneSymbol_False(self):
         # Arrange
         t1 = Term([ZERO])
         t2 = Term([ONE])
@@ -662,7 +662,7 @@ class TestTerm(unittest.TestCase):
         # Assert
         self.assertFalse(t2 < t1)
 
-    def test01700_termsOrderLessThanOneRealOneSymbol_True(self):
+    def test01800_termsOrderLessThanOneRealOneSymbol_True(self):
         # Arrange
         t1 = Term([ONE])
         t2 = Term([self.x])
@@ -672,7 +672,7 @@ class TestTerm(unittest.TestCase):
         # Assert
         self.assertTrue(t1 < t2)
 
-    def test01800_termsOrderLessThanRealComplexOneSymbol_True(self):
+    def test01900_termsOrderLessThanRealComplexOneSymbol_True(self):
         # Arrange
         t1 = Term([self.x])
         t2 = Term([self.z])
@@ -682,7 +682,7 @@ class TestTerm(unittest.TestCase):
         # Assert
         self.assertTrue(t1 < t2)
 
-    def test01900_termsOrderLessThanComplexAnnihilationOneSymbol_True(self):
+    def test02000_termsOrderLessThanComplexAnnihilationOneSymbol_True(self):
         # Arrange
         t1 = Term([self.z])
         t2 = Term([self.a])
@@ -692,7 +692,7 @@ class TestTerm(unittest.TestCase):
         # Assert
         self.assertTrue(t1 < t2)
 
-    def test02000_testOrderLTAnnihilatorsOneSymbol_True(self):
+    def test02100_testOrderLTAnnihilatorsOneSymbol_True(self):
         # Arrange
         t1 = Term([self.b])
         t2 = Term([self.a])
@@ -702,7 +702,7 @@ class TestTerm(unittest.TestCase):
         # Assert
         self.assertTrue(t1 < t2)
 
-    def test02010_testOrderLTAnnihilatorsDifferentTotalDegree_True(self):
+    def test02200_testOrderLTAnnihilatorsDifferentTotalDegree_True(self):
         # Arrange
         t1 = Term([self.a, self.b, self.b])
         t2 = Term([self.a, self.b])
@@ -712,7 +712,7 @@ class TestTerm(unittest.TestCase):
         # Assert
         self.assertTrue(t2 < t1)
 
-    def test02020_testOrderLTAnnihilatorsComplexDifferentTotalDegree_True(self):
+    def test02300_testOrderLTAnnihilatorsComplexDifferentTotalDegree_True(self):
         # Arrange
         t1 = Term([self.a, self.xi, self.xi.conj()])
         t2 = Term([self.a, self.xi])
@@ -722,7 +722,7 @@ class TestTerm(unittest.TestCase):
         # Assert
         self.assertTrue(t2 < t1)
 
-    def test02100_testDominantSymbol_OK(self):
+    def test02400_testDominantSymbol_OK(self):
         # Arrange
         symbols = [self.xi.conj(), self.zeta, self.k, self.zeta, self.a.conj(), self.xi.conj(), self.a.conj(), self.n, self.a, self.a.conj(), self.b, self.b, self.b.conj(), self.k, self.b.conj(), self.b.conj(), self.zeta]
 
@@ -735,7 +735,7 @@ class TestTerm(unittest.TestCase):
         self.assertEqual(res, self.a)
 
 
-    def test02200_termsOrderLTAnnihilatorsTwoSymbols_True(self):
+    def test02500_termsOrderLTAnnihilatorsTwoSymbols_True(self):
         # Arrange
         t1 = Term([self.a])
         t2 = Term([self.x, self.a, self.a])
@@ -745,7 +745,7 @@ class TestTerm(unittest.TestCase):
         # Assert
         self.assertTrue(t1 < t2)
 
-    def test02300_termsOrderLTAnnihilatorsTwoSymbolsConj_True(self):
+    def test02600_termsOrderLTAnnihilatorsTwoSymbolsConj_True(self):
         # Arrange
         t1 = Term([self.a.conj(), self.a])
         t2 = Term([self.a.conj(), self.a.conj()])
@@ -755,7 +755,7 @@ class TestTerm(unittest.TestCase):
         # Assert
         self.assertTrue(t1 < t2)
 
-    def test02400_moreNormalThan_OK(self):
+    def test02700_moreNormalThan_OK(self):
         # Arrange
         t1 = Term([self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.a, self.a.conj()])
         t2 = Term([self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.a.conj(), self.a])
@@ -770,7 +770,7 @@ class TestTerm(unittest.TestCase):
         self.assertFalse(res12)
         self.assertFalse(res11)
 
-    def test02500_moreNormalThanDifferentLengths_error(self):
+    def test02800_moreNormalThanDifferentLengths_error(self):
         # Arrange
         t1 = Term([self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.a, self.a.conj()])
         t2 = Term([self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.a.conj(), self.a, self.a])
@@ -780,7 +780,7 @@ class TestTerm(unittest.TestCase):
         # Assert
         self.assertRaises(Exception, lambda: t1._more_normal_than(t2, self.a))
 
-    def test02600_termsOrderLTAnnihilNormalOrder_True(self):
+    def test02900_termsOrderLTAnnihilNormalOrder_True(self):
         # Arrange
         t1 = Term([self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.a, self.a.conj()])
         t2 = Term([self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.a.conj(), self.a])
@@ -790,7 +790,7 @@ class TestTerm(unittest.TestCase):
         # Assert
         self.assertTrue(t1 < t2)
 
-    def test02700_deleteDominant_OK(self):
+    def test03000_deleteDominant_OK(self):
         # Arrange
         t = Term([self.k, self.n, self.n, self.xi, self.a.conj(), self.a, self.a.conj(), self.a, self.a, self.b, self.b])
 
@@ -800,7 +800,7 @@ class TestTerm(unittest.TestCase):
         # Assert
         self.assertEqual(res, Term([self.k, self.n, self.n, self.xi, self.b, self.b]))
 
-    def test02800_termsOrderLTAnnihilSecondDepth_True(self):
+    def test03100_termsOrderLTAnnihilSecondDepth_True(self):
         # Arrange
         t1 = Term([self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.a, self.a.conj(), self.b, self.b])
         t2 = Term([self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.a, self.a.conj(), self.b.conj(), self.b])
@@ -810,7 +810,7 @@ class TestTerm(unittest.TestCase):
         # Assert
         self.assertTrue(t1 < t2)
 
-    def test02800_termsOrderLTAnnihilThirdDepth_True(self):
+    def test03200_termsOrderLTAnnihilThirdDepth_True(self):
         # Arrange
         t1 = Term([self.xi.conj(), self.xi, self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.a, self.a.conj(), self.b, self.b])
         t2 = Term([self.xi.conj(), self.xi.conj(), self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.a, self.a.conj(), self.b, self.b])
@@ -821,7 +821,7 @@ class TestTerm(unittest.TestCase):
         # Assert
         self.assertTrue(t1 < t2)
 
-    def test02900_termsOrderLTAnnihilForthDepth_True(self):
+    def test03300_termsOrderLTAnnihilForthDepth_True(self):
         # Arrange
         t1 = Term([self.n, self.xi.conj(), self.xi, self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.a, self.a.conj(), self.b, self.b])
         t2 = Term([self.n, self.n, self.xi.conj(), self.xi, self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.a, self.a.conj(), self.b, self.b])
@@ -831,7 +831,7 @@ class TestTerm(unittest.TestCase):
         # Assert
         self.assertTrue(t1 < t2)
 
-    def test03000_termsOrderLTAnnihilForthDepthComplexDisordered_True(self):
+    def test03400_termsOrderLTAnnihilForthDepthComplexDisordered_True(self):
         # Arrange
         t1 = Term([self.n, self.xi.conj(), self.xi, self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.a, self.a.conj(), self.b, self.b])
         t2 = Term([self.n, self.n, self.xi, self.xi.conj(), self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.a, self.a.conj(), self.b, self.b])
@@ -841,7 +841,7 @@ class TestTerm(unittest.TestCase):
         # Assert
         self.assertTrue(t1 < t2)
 
-    def test03100_termsOrderLTEqualTerms_False(self):
+    def test03500_termsOrderLTEqualTerms_False(self):
         # Arrange
         t1 = Term([self.n, self.xi.conj(), self.xi, self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.a, self.a.conj(), self.b, self.b])
 
@@ -850,7 +850,7 @@ class TestTerm(unittest.TestCase):
         # Assert
         self.assertFalse(t1 < t1)
 
-    def test03200_termsOrderLTE_True(self):
+    def test03600_termsOrderLTE_True(self):
         # Arrange
         t1 = Term([self.n, self.xi.conj(), self.xi, self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.a, self.a.conj(), self.b, self.b])
         t2 = Term([self.n, self.n, self.xi, self.xi.conj(), self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.a, self.a.conj(), self.b, self.b])
@@ -861,7 +861,7 @@ class TestTerm(unittest.TestCase):
         self.assertTrue(t1 <= t2)
         self.assertTrue(t1 <= t1)
 
-    def test03300_termsOrderGTAnnihilForthDepthComplexDisordered_True(self):
+    def test03700_termsOrderGTAnnihilForthDepthComplexDisordered_True(self):
         # Arrange
         t1 = Term([self.n, self.xi.conj(), self.xi, self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.a, self.a.conj(), self.b, self.b])
         t2 = Term([self.n, self.n, self.xi, self.xi.conj(), self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.a, self.a.conj(), self.b, self.b])
@@ -871,7 +871,7 @@ class TestTerm(unittest.TestCase):
         # Assert
         self.assertTrue(t2 > t1)
 
-    def test03400_termsOrderGTEqualTerms_False(self):
+    def test03800_termsOrderGTEqualTerms_False(self):
         # Arrange
         t1 = Term([self.n, self.xi.conj(), self.xi, self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.a, self.a.conj(), self.b, self.b])
 
@@ -880,7 +880,7 @@ class TestTerm(unittest.TestCase):
         # Assert
         self.assertFalse(t1 > t1)
 
-    def test03500_termsOrderGTE_True(self):
+    def test03900_termsOrderGTE_True(self):
         # Arrange
         t1 = Term([self.n, self.xi.conj(), self.xi, self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.a, self.a.conj(), self.b, self.b])
         t2 = Term([self.n, self.n, self.xi, self.xi.conj(), self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.a, self.a.conj(), self.b, self.b])
@@ -891,7 +891,7 @@ class TestTerm(unittest.TestCase):
         self.assertTrue(t2 >= t1)
         self.assertTrue(t1 >= t1)
 
-    def test03600_termConstructorWrongIdType_error(self):
+    def test04000_termConstructorWrongIdType_error(self):
         # Arrange
         info = 24
 
@@ -900,7 +900,7 @@ class TestTerm(unittest.TestCase):
         # Assert
         self.assertRaises(Exception, lambda: Term(info))
 
-    def test03700_stringToTermOneSymbolZero_OK(self):
+    def test04100_stringToTermOneSymbolZero_OK(self):
         # Arrange
         bank = []
         info = '0'
@@ -912,7 +912,7 @@ class TestTerm(unittest.TestCase):
         # Assert
         self.assertEqual(res, expected_res)
 
-    def test03800_stringToTermOneSymbolOne_OK(self):
+    def test04200_stringToTermOneSymbolOne_OK(self):
         # Arrange
         bank = []
         info = '1'
@@ -924,7 +924,7 @@ class TestTerm(unittest.TestCase):
         # Assert
         self.assertEqual(res, expected_res)
 
-    def test03900_stringToTermOneSymbolAnnihilator_OK(self):
+    def test04300_stringToTermOneSymbolAnnihilator_OK(self):
         # Arrange
         bank = [self.a]
         info = 'a'
@@ -936,7 +936,7 @@ class TestTerm(unittest.TestCase):
         # Assert
         self.assertEqual(res, expected_res)
 
-    def test04000_stringToTermAmbiguousBank_error(self):
+    def test04400_stringToTermAmbiguousBank_error(self):
         # Arrange
         bank = [self.a, self.a]
         info = 'a'
@@ -946,7 +946,7 @@ class TestTerm(unittest.TestCase):
         # Assert
         self.assertRaises(Exception, lambda: Term(info, bank))
 
-    def test04100_stringToTermTwoSymbolsAnnihilator_OK(self):
+    def test04500_stringToTermTwoSymbolsAnnihilator_OK(self):
         # Arrange
         bank = [self.a]
         info = 'a a'
@@ -958,7 +958,7 @@ class TestTerm(unittest.TestCase):
         # Assert
         self.assertEqual(res, expected_res)
 
-    def test04200_stringToTermSymbolNotInBank_error(self):
+    def test04600_stringToTermSymbolNotInBank_error(self):
         # Arrange
         bank = [self.a]
         info = 'b'
@@ -968,7 +968,7 @@ class TestTerm(unittest.TestCase):
         # Assert
         self.assertRaises(Exception, lambda: Term(info, bank))
 
-    def test04300_stringToTermSquaredSymbol_OK(self):
+    def test04700_stringToTermSquaredSymbol_OK(self):
         # Arrange
         info = 'a^2'
 
@@ -979,7 +979,7 @@ class TestTerm(unittest.TestCase):
         # Assert
         self.assertEqual(res, expected_res)
 
-    def test04400_stringToTermDaggedSymbol_OK(self):
+    def test04800_stringToTermDaggedSymbol_OK(self):
         # Arrange
         info = 'a*'
 
@@ -990,7 +990,7 @@ class TestTerm(unittest.TestCase):
         # Assert
         self.assertEqual(res, expected_res)
 
-    def test04500_stringToTermAllAtOnce_OK(self):
+    def test04900_stringToTermAllAtOnce_OK(self):
         # Arrange
         symbols = [self.k, self.k, self.n, self.xi.conj(), self.xi.conj(), self.zeta, self.zeta, self.zeta, self.a.conj(), self.a.conj(), self.a, self.a.conj(), self.b, self.b, self.b.conj(), self.b.conj(), self.b.conj()]
 
@@ -1003,7 +1003,7 @@ class TestTerm(unittest.TestCase):
         # Assert
         self.assertEqual(res, t)
 
-    def test04600_mulTerms_OK(self):
+    def test05000_mulTerms_OK(self):
         # Arrange
         t1 = Term([self.k, self.xi, self.a.conj(), self.a, self.b.conj(), self.b.conj()])
         t2 = Term([self.n, self.n, self.xi.conj(), self.zeta, self.a.conj(), self.a, self.b, self.b.conj()])
@@ -1015,7 +1015,7 @@ class TestTerm(unittest.TestCase):
         # Assert
         self.assertEqual(res, expected_res)
 
-    def test04700_mulTermSymbol_TermOK(self):
+    def test05100_mulTermSymbol_TermOK(self):
         # Arrange
         t = Term([self.a])
 
@@ -1025,7 +1025,7 @@ class TestTerm(unittest.TestCase):
         # Assert
         self.assertEqual(res, Term([self.a, self.b]))
 
-    def test04800_mulSymbolTerm_TermOK(self):
+    def test05200_mulSymbolTerm_TermOK(self):
         # Arrange
         t = Term([self.a])
 
@@ -1035,6 +1035,24 @@ class TestTerm(unittest.TestCase):
         # Assert
         self.assertEqual(res, Term([self.b, self.a]))
 
+    def test05300_instanciateTermOneOneOne_One(self):
+        # Arrange
+        t = Term([ONE, ONE, ONE])
+
+        # Act
+
+        # Assert
+        self.assertEqual(t, Term([ONE]))
+
+    def test05400_instanciateTermEmptyString_One(self):
+        # Arrange
+        t = Term('')
+
+        # Act
+
+        # Assert
+        self.assertEqual(t, Term('1'))
+            
 class TestExpression(unittest.TestCase):
     def setUp(self):
         self.k = Symbol('k', 'real')
@@ -1087,10 +1105,10 @@ class TestExpression(unittest.TestCase):
         t3 = Term()
 
         # Act
-        e = Expression([t1, t2, t1, t3, t2, t2])
+        e = Expression([t1, t2, t1, t3, t2, t2, t3, t3])
 
         # Assert
-        self.assertEqual(e.terms, [Term()])
+        self.assertEqual(e.terms, [t2, t2, t2, t1, t1])
 
     def test00500_exprEquality_OK(self):
         # Arrange
@@ -1135,7 +1153,7 @@ class TestExpression(unittest.TestCase):
         # Assert
         self.assertEqual(res, Expression([Term('1'), Term('a* a'), Term('b'), Term('b')]))
 
-    def test00700_addExprTerm_OK(self):
+    def test00900_addExprTerm_OK(self):
         # Arrange
         e = Expression([Term('1'), Term('a* a'), Term('b')])
 
@@ -1145,7 +1163,7 @@ class TestExpression(unittest.TestCase):
         # Assert
         self.assertEqual(res, Expression([Term('1'), Term('a* a'), Term('b'), Term('b* b a')]))
 
-    def test00800_addTermExpr_OK(self):
+    def test01000_addTermExpr_OK(self):
         # Arrange
         e = Expression([Term('1'), Term('a* a'), Term('b')])
 
@@ -1155,19 +1173,164 @@ class TestExpression(unittest.TestCase):
         # Assert
         self.assertEqual(res, Expression([Term('1'), Term('a* a'), Term('b'), Term('b* b a')]))
 
+    def test01100_mulExprSymbol_OK(self):
+        # Arrange
+        e = Expression([Term('1'), Term('a* a'), Term('b')])
+
+        # Act
+        res = e * Symbol('a', 'annihilation', dag=True)
+        expected_res = Expression([Term('a*'), Term('a* a a*'), Term('a* b')])
+
+        # Asser
+        self.assertEqual(res, expected_res)
+
+    def test01200_mulSymbolExpr_OK(self):
+        # Arrange
+        e = Expression([Term('1'), Term('a* a'), Term('b')])
+
+        # Act
+        res = Symbol('a', 'annihilation', dag=True) * e
+        expected_res = Expression([Term('a*'), Term('a*^2 a'), Term('a* b')])
+
+        # Asser
+        self.assertEqual(res, expected_res)
+
+    def test01300_mulExprTerm_OK(self):
+        # Arrange
+        e = Expression([Term('1'), Term('a* a'), Term('b')])
+        t = Term('a* b^2')
+
+        # Act
+        res = e * t
+        expected_res = Expression([Term('a* b^2'), Term('a* a a* b^2'), Term('a* b^3')])
+
+        # Asser
+        self.assertEqual(res, expected_res)
+
+    def test01400_mulTermExpr_OK(self):
+        # Arrange
+        e = Expression([Term('1'), Term('a* a'), Term('b')])
+        t = Term('a* b^2')
+
+        # Act
+        res = t * e
+        expected_res = Expression([Term('a* b^2'), Term('a*^2 a b^2'), Term('a* b^3')])
+
+        # Asser
+        self.assertEqual(res, expected_res)
+
+    def test01500_mulExprExpr_OK(self):
+        # Arrange
+        e1 = Expression([Term('1'), Term('a* a'), Term('b')])
+        e2 = Expression([Term('1'), Term('a^2 b* b')])
+
+        # Act
+        res1 = e1 * e2
+        res2 = e2 * e1
+        expected_res1 = Expression([Term('1'), Term('a* a'), Term('b'), Term('a^2 b* b'), Term('a* a^3 b* b'), Term('a^2 b b* b')])
+        expected_res2 = Expression([Term('1'), Term('a^2 b* b'), Term('b'), Term('a* a'), Term('a^2 a* a b* b'), Term('a^2 b* b^2')])
+
+        # Assert
+        self.assertEqual(res1, expected_res1)
+        self.assertEqual(res2, expected_res2)
+
+    def test01600_instanciateExprZeroZeroZero_Zero(self):
+        # Arrange
+        e = Expression([Term(), Term(), Term()])
+
+        # Act
+
+        # Assert
+        self.assertEqual(e, Expression())
+
+    def test01700_printExprZero_OK(self):
+        # Arrange
+
+        # Act
+
+        # Assert
+        self.assertEqual(str(Expression()), '0')
+
+    def test01800_printExprOneTerm_OK(self):
+        # Arrange
+        e = Expression([Term('a^2 a* a b* b')])
+
+        # Act
+
+        # Assert
+        self.assertEqual(str(e), 'a^2 a* a b* b')
+
+    def test01900_printExprSeveralTerms_OK(self):
+        # Arrange
+        e = Expression([Term('1'), Term('a^2 b* b'), Term('b'), Term('a* a'), Term('a^2 a* a b* b'), Term('a^2 b* b^2')])
+
+        # Act
+
+        # Assert
+        self.assertEqual(str(e), 'a^2 a* a b* b + a^2 b* b^2 + a^2 b* b + a* a + b + 1')
+
+    def test02000_stringToExprEmptyString_zero(self):
+        # Arrange
+
+        # Act
+        res = Expression('')
+
+        # Assert
+        self.assertEqual(res, Expression())
+
+    def test02100_stringToExprOneTerm_OK(self):
+        # Arrange
+
+        # Act
+        res = Expression('a^2 a* a b* b')
+        expected_res = Expression([Term('a^2 a* a b* b')])
+
+        # Assert
+        self.assertEqual(res, expected_res)
+
+    def test02200_instanciateExprBadInfoType_error(self):
+        # Arrange
+
+        # Act
+
+        # Assert
+        self.assertRaises(Exception, lambda: Expression(123))
+
+    def test02300_stringToExprSeveralTerms_OK(self):
+        # Arrange
+
+        # Act
+        res = Expression('1 + b + a^2 a* a b* b + a^2 b* b^2 + a^2 b* b + a* a')
+        expected_res = Expression([Term('1'), Term('a^2 b* b'), Term('b'), Term('a* a'), Term('a^2 a* a b* b'), Term('a^2 b* b^2')])
+
+        # Assert
+        self.assertEqual(res, expected_res)
+
+    def test02400_stringToExprInsensitiveToPlusSpaces_OK(self):
+        # Arrange
+
+        # Act
+        res = Expression('1+ b + a^2 a* a b* b +a^2 b* b^2+a^2 b* b +a* a')
+        expected_res = Expression([Term('1'), Term('a^2 b* b'), Term('b'), Term('a* a'), Term('a^2 a* a b* b'), Term('a^2 b* b^2')])
+
+        # Assert
+        self.assertEqual(res, expected_res)
+
 if __name__ == '__main__':
+    verb = 1 # Verbosity
+
     print(">>> Testing Symbol class...\n")
     suite = unittest.TestLoader().loadTestsFromTestCase(TestSymbol)
-    unittest.TextTestRunner().run(suite)
+    unittest.TextTestRunner(verbosity=verb).run(suite)
 
     sleep(0.3)
 
     print("\n>>> Testing Term class...\n")
     suite = unittest.TestLoader().loadTestsFromTestCase(TestTerm)
-    unittest.TextTestRunner().run(suite)
+    unittest.TextTestRunner(verbosity=verb).run(suite)
 
     sleep(0.3)
     
     print("\n>>> Testing Expression class...\n")
     suite = unittest.TestLoader().loadTestsFromTestCase(TestExpression)
-    unittest.TextTestRunner().run(suite)
+    unittest.TextTestRunner(verbosity=verb).run(suite)
