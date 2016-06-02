@@ -73,6 +73,12 @@ class Symbol:
         else:
             return NotImplemented
 
+    def __add__(a, b):
+        if isinstance(b, Symbol):
+            return Expression([Term([a]), Term([b])])
+        else:
+            return NotImplemented
+
     def conj(self):
         if self.name not in self._hermitian_behaviors:
             return Symbol(self.name, self.behavior, not self.dag)
@@ -231,6 +237,17 @@ class Term:
             return Term(B.symbols + A.symbols)
         elif isinstance(B, Symbol):
             return Term([B] + A.symbols)
+
+    def __add__(A, B):
+        if isinstance(B, Term):
+            return Expression([A, B])
+        else:
+            return NotImplemented
+
+    def conj(self):
+        symbols = [s.conj() for s in reversed(self.symbols)]
+
+        return Term(symbols)
 
     def _group_symbols(self):
         '''
@@ -391,3 +408,8 @@ class Expression:
 
     def __str__(self):
         return ' + '.join(map(str, self.terms))
+
+    def conj(self):
+        terms = [t.conj() for t in self.terms]
+
+        return Expression(terms)

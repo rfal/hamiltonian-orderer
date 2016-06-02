@@ -428,6 +428,17 @@ class TestSymbol(unittest.TestCase):
         # Assert
         self.assertEqual(res, Term([a, b]))
 
+    def test02600_addSymbols_ExprOK(self):
+        # Arrange
+        a = Symbol('a', 'annihilation')
+        b = Symbol('b', 'annihilation')
+
+        # Act
+        res = a + b.conj()
+
+        # Assert
+        self.assertEqual(res, Expression('a + b*'))
+
 class TestTerm(unittest.TestCase):
     def setUp(self):
         self.k = Symbol('k', 'real')
@@ -1052,6 +1063,27 @@ class TestTerm(unittest.TestCase):
 
         # Assert
         self.assertEqual(t, Term('1'))
+
+    def test05500_addTerms_ExprOK(self):
+        # Arrange
+        t1 = Term('a* a')
+        t2 = Term('a* b^2')
+
+        # Act
+        res = t1 + t2
+
+        # Assert
+        self.assertEqual(res, Expression([t1, t2]))
+
+    def test05600_conjTerm_OK(self):
+        # Arrange
+        t = Term('k^2 x xi*^2 xi zeta a*^2 a a b* b b*^2 b')
+
+        # Act
+        res = t.conj()
+
+        # Assert
+        self.assertEqual(res, Term('k^2 x xi^2 xi* zeta* a*^2 a^2 b* b^2 b* b'))
             
 class TestExpression(unittest.TestCase):
     def setUp(self):
@@ -1312,6 +1344,17 @@ class TestExpression(unittest.TestCase):
         # Act
         res = Expression('1+ b + a^2 a* a b* b +a^2 b* b^2+a^2 b* b +a* a')
         expected_res = Expression([Term('1'), Term('a^2 b* b'), Term('b'), Term('a* a'), Term('a^2 a* a b* b'), Term('a^2 b* b^2')])
+
+        # Assert
+        self.assertEqual(res, expected_res)
+
+    def test02500_conjExpression_OK(self):
+        # Arrange
+        e = Expression('1 + b + a^2 a* a b* b + a^2 b* b^2 + a^2 b* b + a* a')
+
+        # Act
+        res = e.conj()
+        expected_res = Expression('1 + b* + a* a a*^2 b* b + a*^2 b*^2 b + a*^2 b* b + a* a')
 
         # Assert
         self.assertEqual(res, expected_res)
