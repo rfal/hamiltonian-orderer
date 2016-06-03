@@ -439,6 +439,26 @@ class TestSymbol(unittest.TestCase):
         # Assert
         self.assertEqual(res, Expression('a + b*'))
 
+    def test02700_reprSymbolNotDagged_OK(self):
+        # Arrange
+        a = Symbol('a', 'annihilation')
+
+        # Act
+        res = repr(a)
+
+        # Assert
+        self.assertEqual(res, "Symbol('a', 'annihilation', dag=False)")
+
+    def test02800_reprSymbolDagged_OK(self):
+        # Arrange
+        a = Symbol('a', 'annihilation')
+
+        # Act
+        res = repr(a.conj())
+
+        # Assert
+        self.assertEqual(res, "Symbol('a', 'annihilation', dag=True)")
+
 class TestTerm(unittest.TestCase):
     def setUp(self):
         self.k = Symbol('k', 'real')
@@ -463,14 +483,14 @@ class TestTerm(unittest.TestCase):
         # Assert
         self.assertEqual(t_sym_list, [ZERO])
 
-    def test00200_instanciateEmptyTerm_equalsZeroTerm(self):
+    def test00200_instanciateEmptyTerm_equalsOneTerm(self):
         # Arrange
 
         # Act
         t = Term([])
 
         # Assert
-        self.assertEqual(t.symbols, [ZERO])
+        self.assertEqual(t.symbols, [ONE])
 
     def test00300_instanciateOneTerm_listOK(self):
         # Arrange
@@ -1154,7 +1174,7 @@ class TestTerm(unittest.TestCase):
         # Assert
         self.assertTrue(t.is_normal_ordered())
 
-    def test05800_isNormalOrderedAllSymbolsTermOne_OK(self):
+    def test06400_isNormalOrderedAllSymbolsTermOne_OK(self):
         # Arrange
         t = Term('1')
 
@@ -1163,7 +1183,7 @@ class TestTerm(unittest.TestCase):
         # Assert
         self.assertTrue(t.is_normal_ordered())
 
-    def test05900_isNormalOrderedAllSymbolsOnlyA_True(self):
+    def test06500_isNormalOrderedAllSymbolsOnlyA_True(self):
         # Arrange
         t = Term('a* a* a* a a a')
 
@@ -1172,7 +1192,7 @@ class TestTerm(unittest.TestCase):
         # Assert
         self.assertTrue(t.is_normal_ordered())
     
-    def test06000_isNormalOrderedAllSymbolsOnlyA_False(self):
+    def test06600_isNormalOrderedAllSymbolsOnlyA_False(self):
         # Arrange
         symbol = self.a
         t = Term('a* a* a a a* a')
@@ -1182,9 +1202,8 @@ class TestTerm(unittest.TestCase):
         # Assert
         self.assertFalse(t.is_normal_ordered())
 
-    def test06100_isNormalOrderedAllSymbols_True(self):
+    def test06700_isNormalOrderedAllSymbols_True(self):
         # Arrange
-        symbol = self.a
         t = Term('k n xi xi* zeta a* a* a* a a a b* b* b b')
 
         # Act
@@ -1192,15 +1211,24 @@ class TestTerm(unittest.TestCase):
         # Assert
         self.assertTrue(t.is_normal_ordered())
     
-    def test06200_isNormalOrderedAllSymbols_False(self):
+    def test06800_isNormalOrderedAllSymbols_False(self):
         # Arrange
-        symbol = self.a
         t = Term('k n xi xi* zeta  a* a* a a a* a b* b* b b* b')
 
         # Act
 
         # Assert
         self.assertFalse(t.is_normal_ordered())
+
+    def test06900_reprTerm_OK(self):
+        # Arrange
+        t = Term('k n xi xi* zeta  a* a* a a a* a b* b* b b* b')
+
+        # Act
+        res = repr(t)
+
+        # Assert
+        self.assertEqual(res, "Term('k n xi* xi zeta a*^2 a^2 a* a b*^2 b b* b')")
             
 class TestExpression(unittest.TestCase):
     def setUp(self):
@@ -1222,11 +1250,11 @@ class TestExpression(unittest.TestCase):
         e = Expression([])
 
         # Assert
-        self.assertEqual(e.terms, [Term()])
+        self.assertEqual(e.terms, [Term('0')])
 
     def test00200_instanciateExpressionTwoTerms_attrOK(self):
         # Arrange
-        t1 = Term('1')
+        t1 = Term()
 
         # Act
         e = Expression([t1, t1])
@@ -1249,9 +1277,9 @@ class TestExpression(unittest.TestCase):
 
     def test00400_instanciateExpressionWithZero_zero(self):
         # Arrange
-        t1 = Term('1')
+        t1 = Term()
         t2 = Term('a* a')
-        t3 = Term()
+        t3 = Term('0')
 
         # Act
         e = Expression([t1, t2, t1, t3, t2, t2, t3, t3])
@@ -1385,7 +1413,7 @@ class TestExpression(unittest.TestCase):
 
     def test01600_instanciateExprZeroZeroZero_Zero(self):
         # Arrange
-        e = Expression([Term(), Term(), Term()])
+        e = Expression([Term('0'), Term('0'), Term('0')])
 
         # Act
 
@@ -1475,6 +1503,16 @@ class TestExpression(unittest.TestCase):
 
         # Assert
         self.assertEqual(res, expected_res)
+
+    def test03100_reprExpression_OK(self):
+        # Arrange
+        e = Expression('1 + b + a^2 a* a b* b + a^2 b* b^2 + a^2 b* b + a* a')
+
+        # Act
+        res = repr(e)
+
+        # Assert
+        self.assertEqual(res, "Expression('a^2 a* a b* b + a^2 b* b^2 + a^2 b* b + a* a + b + 1')")
 
 if __name__ == '__main__':
     verb = 1 # Verbosity

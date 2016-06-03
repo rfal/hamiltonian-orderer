@@ -67,6 +67,9 @@ class Symbol:
 
             return res
 
+    def __repr__(self):
+        return "Symbol('{}', '{}', dag={})".format(self.name, self.behavior, self.dag)
+
     def __mul__(a, b):
         if isinstance(b, Symbol):
             return Term([a, b])
@@ -142,10 +145,10 @@ class Term:
             self.__init__(symbols)
         elif isinstance(info, list):
             symbols = info
-            if not symbols or ZERO in symbols:
+            if ZERO in symbols:
                 self.symbols = [ZERO]
-            elif all(s == ONE for s in symbols):
-                self.symbols = [ONE]
+            elif not symbols or all(s == ONE for s in symbols):
+                self.symbols = [ONE] # An empty product is equal to 1
             else:
                 self.symbols = sorted([s for s in symbols if s != ONE]) # Thank God sorted() is stable!
         else:
@@ -158,9 +161,11 @@ class Term:
         '''
         Recursively determine if A is 'smaller' than B, meaning that A would be naturally written after B.
         '''
-        # Base case
+        # Base cases
         if ZERO in B.symbols:
             return False
+        elif B.symbols == [ONE]:
+            return ZERO in A.symbols
 
         # First compare the total degree of A and B according to complex and annihilation symbols (becauses complex symbols are supposed to vary in time, so that they count)
         # Note that if this comparison holds through the recursion
@@ -224,6 +229,9 @@ class Term:
         
         return ' '.join(map(str_group, groups))
 
+    def __repr__(self):
+        return "Term('{}')".format(str(self))
+
     def __mul__(A, B):
         if isinstance(B, Term):
             return Term(A.symbols + B.symbols)
@@ -272,7 +280,6 @@ class Term:
                 return True
 
             return False
-        
 
     def _group_symbols(self):
         '''
@@ -387,11 +394,11 @@ class Expression:
                 terms = [Term(i) for i in infos]
                 self.__init__(terms)
         elif isinstance(info, list):
-            if not info or all(t == Term() for t in info):
-                self.terms = [Term()] # An empty sum is zero
+            if not info or all(t == Term('0') for t in info):
+                self.terms = [Term('0')] # An empty sum is zero
             else:
                 self.terms = sorted(info)[::-1] # Because we want the Terms in decreasing order
-                self.terms = [t for t in self.terms if t != Term()] # then we remove all occurences of 0
+                self.terms = [t for t in self.terms if t != Term('0')] # then we remove all occurences of 0
         else:
             raise Exception('Expression constructor argument should be a string or a list of Terms.')
 
@@ -434,7 +441,43 @@ class Expression:
     def __str__(self):
         return ' + '.join(map(str, self.terms))
 
+    def __repr__(self):
+        return "Expression('{}')".format(str(self))
+
     def conj(self):
         terms = [t.conj() for t in self.terms]
 
         return Expression(terms)
+
+    def normal_order(self):
+        for i, t in enumerate(self.terms):
+            if not t.is_normal_ordered():
+                # len(t.symbols) >= 2, otherwise t would automatically be normal-ordered
+                symbols = t.symbols
+                terms = self.terms
+                e_before = Expression(terms[:i])
+                e_after = Expression(terms[i+1:])
+
+                for j, s in enumerate(symbols):
+                    s1 = symbols[j]
+                    s2 = symbols[j + 1]
+                    if s2.dag and not s1.dag:
+                        t_before = Term(symbols[:j])
+                        t_after = Term(symbols[j+1:])
+                        t_inv = Term([s2, s1])
+                        
+                        new_part = t_before * Expression([t_inv, Term([ONE])]) * t_after
+
+                        new_expr = e_before + new_part + e_after
+                        print('')
+                        print('t_before: ' + str(t_before))
+                        print('t_after: ' + str(t_after))
+                        print('t_inv: ' + str(t_inv))
+                        print('new_part: ' + str(new_part))
+                        print('new_expr: ' + str(new_expr))
+                        
+                        self.terms = new_expr.terms
+                        break
+
+                break
+        return
