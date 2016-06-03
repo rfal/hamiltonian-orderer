@@ -1430,21 +1430,21 @@ class TestExpression(unittest.TestCase):
 
     def test01800_printExprOneTerm_OK(self):
         # Arrange
-        e = Expression([Term('a^2 a* a b* b')])
+        e = Expression([Term('a* a^3 b* b')])
 
         # Act
 
         # Assert
-        self.assertEqual(str(e), 'a^2 a* a b* b')
+        self.assertEqual(str(e), 'a* a^3 b* b')
 
     def test01900_printExprSeveralTerms_OK(self):
         # Arrange
-        e = Expression([Term('1'), Term('a^2 b* b'), Term('b'), Term('a* a'), Term('a^2 a* a b* b'), Term('a^2 b* b^2')])
+        e = Expression([Term('1'), Term('a^2 b* b'), Term('b'), Term('a* a'), Term('a* a^3 b* b'), Term('a^2 b* b^2')])
 
         # Act
 
         # Assert
-        self.assertEqual(str(e), 'a^2 a* a b* b + a^2 b* b^2 + a^2 b* b + a* a + b + 1')
+        self.assertEqual(str(e), 'a* a^3 b* b + a^2 b* b^2 + a^2 b* b + a* a + b + 1')
 
     def test02000_stringToExprEmptyString_zero(self):
         # Arrange
@@ -1556,13 +1556,13 @@ class TestExpression(unittest.TestCase):
 
     def test03100_reprExpression_OK(self):
         # Arrange
-        e = Expression('1 + b + a^2 a* a b* b + a^2 b* b^2 + a^2 b* b + a* a')
+        e = Expression('1 + b + a* a^3 b* b + a^2 b* b^2 + a^2 b* b + a* a')
 
         # Act
         res = repr(e)
 
         # Assert
-        self.assertEqual(res, "Expression('a^2 a* a b* b + a^2 b* b^2 + a^2 b* b + a* a + b + 1')")
+        self.assertEqual(res, "Expression('a* a^3 b* b + a^2 b* b^2 + a^2 b* b + a* a + b + 1')")
 
     def test03200_printExprTwoTimesTerm_ok(self):
         # Arrange
@@ -1626,6 +1626,17 @@ class TestExpression(unittest.TestCase):
 
         # Assert
         self.assertEqual(e, Expression('a*^3 a^3 + 5 a*^2 a^2 + 4 a* a'))
+
+    def test03800_expressionsAreAutomaticallyNormalOrdered_OK(self):
+        # Arrange
+        e1 = Expression('a a* a a*^2 a')
+        e2 = Expression('a a* a a*^2 a')
+
+        # Act
+        e2.normal_order()
+
+        # Assert
+        self.assertEqual(e1, e2)
 
 if __name__ == '__main__':
     verb = 1 # Verbosity

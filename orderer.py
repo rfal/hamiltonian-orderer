@@ -419,6 +419,8 @@ class Expression:
             else:
                 self.terms = sorted(info)[::-1] # Because we want the Terms in decreasing order
                 self.terms = [t for t in self.terms if t != Term('0')] # then we remove all occurences of 0
+
+            self.normal_order()
         else:
             raise Exception('Expression constructor argument should be a string or a list of Terms.')
 
