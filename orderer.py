@@ -391,7 +391,27 @@ class Expression:
                 self.__init__()
             else:
                 infos = info.split('+')
-                terms = [Term(i) for i in infos]
+                terms = []
+
+                for i in infos:
+                    info = i.strip()
+
+                    for k, c in enumerate(info):
+                        if not c.isdigit():
+                            int_until = k
+                            break
+                    else:
+                        int_until = len(info)
+
+                    try:
+                        factor = int(info[:int_until])
+                    except ValueError:
+                        factor = 1
+
+                    term = Term(info[int_until:].strip())
+
+                    terms.extend([term] * factor)
+
                 self.__init__(terms)
         elif isinstance(info, list):
             if not info or all(t == Term('0') for t in info):
@@ -439,7 +459,10 @@ class Expression:
             return NotImplemented
 
     def __str__(self):
-        return ' + '.join(map(str, self.terms))
+        groups = self._group_terms()
+        str_group = lambda x: (str(x[1]) + ' ' if x[1] != 1 else '') + (str(x[0]) if x[1] == 1 or x[0] != Term() else '')
+        
+        return ' + '.join(map(str_group, groups)).strip()
 
     def __repr__(self):
         return "Expression('{}')".format(str(self))
@@ -463,21 +486,42 @@ class Expression:
                     s2 = symbols[j + 1]
                     if s2.dag and not s1.dag:
                         t_before = Term(symbols[:j])
-                        t_after = Term(symbols[j+1:])
+                        t_after = Term(symbols[j+2:])
                         t_inv = Term([s2, s1])
                         
                         new_part = t_before * Expression([t_inv, Term([ONE])]) * t_after
 
                         new_expr = e_before + new_part + e_after
-                        print('')
-                        print('t_before: ' + str(t_before))
-                        print('t_after: ' + str(t_after))
-                        print('t_inv: ' + str(t_inv))
-                        print('new_part: ' + str(new_part))
-                        print('new_expr: ' + str(new_expr))
+                        # print('')
+                        # print('t_before: ' + str(t_before))
+                        # print('t_after: ' + str(t_after))
+                        # print('t_inv: ' + str(t_inv))
+                        # print('new_part: ' + str(new_part))
+                        # print('new_expr: ' + str(new_expr))
                         
                         self.terms = new_expr.terms
                         break
 
                 break
-        return
+        else:
+            return
+
+        self.normal_order()
+
+    def _group_terms(self):
+        terms = self.terms
+        
+        res = []
+        i = 0
+        while i < len(terms):
+            t = terms[i]
+            j = 1
+            while i + j < len(terms) and terms[i + j] == t:
+                j += 1
+            
+            g = (t, j)
+            res.append(g)
+
+            i += j
+
+        return res

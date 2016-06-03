@@ -1504,6 +1504,56 @@ class TestExpression(unittest.TestCase):
         # Assert
         self.assertEqual(res, expected_res)
 
+    def test02600_normalOrderExpressionEmptyExpression_zero(self):
+        # Arrange
+        e = Expression()
+
+        # Act
+        e.normal_order()
+
+        # Assert
+        self.assertEqual(e, Expression())
+
+    def test02700_normalOrderExpressionOne_OK(self):
+        # Arrange
+        e = Expression('1')
+
+        # Act
+        e.normal_order()
+
+        # Assert
+        self.assertEqual(e, Expression('1'))
+
+    def test02800_normalOrderExpressionAlreadyOrdered_OK(self):
+        # Arrange
+        e = Expression('a* a')
+
+        # Act
+        e.normal_order()
+
+        # Act
+        self.assertEqual(e, Expression('a* a'))
+
+    def test02900_normalOrderSimpleExpression_OK(self):
+        # Arrange
+        e = Expression('a a*')
+
+        # Act
+        e.normal_order()
+
+        # Assert
+        self.assertEqual(e, Expression('a* a + 1'))
+
+    def test03000_normalOrderOneInversionHighDegree_OK(self):
+        # Arrange
+        e = Expression('a* a* a a* a a a')
+
+        # Act
+        e.normal_order()
+
+        # Assert
+        self.assertEqual(e, Expression('a*^3 a^4 + a*^2 a^3'))
+
     def test03100_reprExpression_OK(self):
         # Arrange
         e = Expression('1 + b + a^2 a* a b* b + a^2 b* b^2 + a^2 b* b + a* a')
@@ -1513,6 +1563,69 @@ class TestExpression(unittest.TestCase):
 
         # Assert
         self.assertEqual(res, "Expression('a^2 a* a b* b + a^2 b* b^2 + a^2 b* b + a* a + b + 1')")
+
+    def test03200_printExprTwoTimesTerm_ok(self):
+        # Arrange
+        t = Term('a* a')
+        e = Expression([t, t])
+
+        # Act
+        res = str(e)
+
+        # Assert
+        self.assertEqual(res, '2 a* a')
+
+    def test03300_groupTermsOneTerm_OK(self):
+        # Arrange
+        t = Term('a* a')
+        e = Expression([t, t, t])
+
+        # Act
+        res = e._group_terms()
+
+        # Assert
+        self.assertEqual(res, [(t, 3)])
+
+    def test03400_stringToExprFactor3_OK(self):
+        # Arrange
+        t = Term()
+
+        # Act
+        e = Expression('3')
+
+        # Assert
+        self.assertEqual(e, Expression([t] * 3))
+
+    def test03500_stringToExprFactor3SeveralTerms_OK(self):
+        # Arrange
+        t = Term()
+
+        # Act
+        e = Expression('3 + 2 a* a + 4 k n b* b')
+
+        # Assert
+        self.assertEqual(e, Expression('1 + 1 + 1 + a* a + a* a+ k n b* b + k n b* b + k n b* b + k n b* b'))
+
+    def test03600_exprtoStringIgnoreOneWhenFactor_OK(self):
+        # Arrange
+        t = Term()
+        e = Expression('3')
+
+        # Act
+        res = str(e)
+
+        # Assert
+        self.assertEqual(res, '3')
+
+    def test03700_normalOrderSeveralInversionsHighDegree_OK(self):
+        # Arrange
+        e = Expression('a a* a a*^2 a')
+
+        # Act
+        e.normal_order()
+
+        # Assert
+        self.assertEqual(e, Expression('a*^3 a^3 + 5 a*^2 a^2 + 4 a* a'))
 
 if __name__ == '__main__':
     verb = 1 # Verbosity
