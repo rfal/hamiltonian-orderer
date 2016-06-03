@@ -494,12 +494,6 @@ class Expression:
                         new_part = t_before * Expression([t_inv, Term([ONE])]) * t_after
 
                         new_expr = e_before + new_part + e_after
-                        # print('')
-                        # print('t_before: ' + str(t_before))
-                        # print('t_after: ' + str(t_after))
-                        # print('t_inv: ' + str(t_inv))
-                        # print('new_part: ' + str(new_part))
-                        # print('new_expr: ' + str(new_expr))
                         
                         self.terms = new_expr.terms
                         break

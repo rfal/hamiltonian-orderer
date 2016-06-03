@@ -1641,18 +1641,20 @@ class TestExpression(unittest.TestCase):
 if __name__ == '__main__':
     verb = 1 # Verbosity
 
-    print(">>> Testing Symbol class...\n")
-    suite = unittest.TestLoader().loadTestsFromTestCase(TestSymbol)
-    unittest.TextTestRunner(verbosity=verb).run(suite)
+    unittest.main()
 
-    sleep(0.3)
+    # print(">>> Testing Symbol class...\n")
+    # suite = unittest.TestLoader().loadTestsFromTestCase(TestSymbol)
+    # unittest.TextTestRunner(verbosity=verb).run(suite)
 
-    print("\n>>> Testing Term class...\n")
-    suite = unittest.TestLoader().loadTestsFromTestCase(TestTerm)
-    unittest.TextTestRunner(verbosity=verb).run(suite)
+    # sleep(0.3)
 
-    sleep(0.3)
+    # print("\n>>> Testing Term class...\n")
+    # suite = unittest.TestLoader().loadTestsFromTestCase(TestTerm)
+    # unittest.TextTestRunner(verbosity=verb).run(suite)
+
+    # sleep(0.3)
     
-    print("\n>>> Testing Expression class...\n")
-    suite = unittest.TestLoader().loadTestsFromTestCase(TestExpression)
-    unittest.TextTestRunner(verbosity=verb).run(suite)
+    # print("\n>>> Testing Expression class...\n")
+    # suite = unittest.TestLoader().loadTestsFromTestCase(TestExpression)
+    # unittest.TextTestRunner(verbosity=verb).run(suite)
